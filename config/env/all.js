@@ -2,9 +2,9 @@
 
 module.exports = {
 	app: {
-		title: 'Angle',
-		description: 'Bootstrap Admin Theme + Meanjs',
-		keywords: 'MongoDB, Express, AngularJS, Node.js'
+		title: 'Energy Market',
+		description: 'Energy Market data',
+		keywords: 'Energy Market, SPP'
 	},
 	port: process.env.PORT || 3000,
 	templateEngine: 'swig',

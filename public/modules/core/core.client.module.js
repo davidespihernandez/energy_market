@@ -30,8 +30,8 @@ angular.module('core').run(["$rootScope", "$state", "$stateParams",  '$window', 
     // Scope Globals
     // ----------------------------------- 
     $rootScope.app = {
-      name: 'Angle',
-      description: 'Angular Bootstrap Admin Template',
+      name: 'Energy Market',
+      description: 'Energy Market data',
       year: ((new Date()).getFullYear()),
       layout: {
         isFixed: true,

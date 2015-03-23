@@ -1,9 +1,9 @@
 'use strict';
 
 module.exports = {
-	db: 'mongodb://localhost/angle-dev',
+	db: 'mongodb://localhost/energy_market',
 	app: {
-		title: 'Angle - Development Environment'
+		title: 'Energy Market - Development Environment'
 	},
 	facebook: {
 		clientID: process.env.FACEBOOK_ID || 'APP_ID',
