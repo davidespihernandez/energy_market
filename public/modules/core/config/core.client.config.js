@@ -5,7 +5,7 @@ angular.module('core').run(['Menus',
   function(Menus) {
 
     // Add default menu entry
-    Menus.addMenuItem('sidebar', 'Home', 'home', null, '/home', true, null, null, 'icon-home');
+    Menus.addMenuItem('sidebar', 'Dashboard', 'home', null, '/home', false, null, null, 'icon-speedometer');  //false -> non public
 
   }
 ]).config(['$ocLazyLoadProvider', 'APP_REQUIRES', function ($ocLazyLoadProvider, APP_REQUIRES) {

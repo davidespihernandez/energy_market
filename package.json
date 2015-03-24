@@ -1,8 +1,8 @@
 {
-  "name": "angle",
-  "description": "Bootstrap Admin Theme + Meanjs",
+  "name": "Energy Market",
+  "description": "Energy Market data application",
   "version": "0.0.1",
-  "author": "Themicon",
+  "author": "atkloud",
   "engines": {
     "node": "0.10.x",
     "npm": "1.4.x"
