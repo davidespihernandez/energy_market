@@ -33,11 +33,11 @@ angular.module('fileManager').controller('FileManagerController', ['$scope', '$s
         $scope.splitCurrentDirectory = function(){
             var dirs = $scope.currentDirectory.split('/');
             var arrayLength = dirs.length;
-            var dirComponentsList = []
+            var dirComponentsList = [];
             for (var i = 0; i < arrayLength; i++) {
-                var subDirFullString = ""
+                var subDirFullString = "";
                 for(var j = 0; j<=i; j++){
-                    if(subDirFullString != ""){
+                    if(subDirFullString !== ""){
                         subDirFullString += "/";
                     }
                     subDirFullString += dirs[j];
@@ -123,7 +123,7 @@ angular.module('fileManager').controller('FileManagerController', ['$scope', '$s
         $scope.pageChanged = function(){
             console.log('Page changed to ' + $scope.currentPage);
             var indexFrom = ($scope.currentPage-1)*$scope.itemsPerPage;
-            $scope.pagedFileLoadedList = $scope.fileLoadedList.slice(indexFrom, indexFrom + $scope.itemsPerPage)
+            $scope.pagedFileLoadedList = $scope.fileLoadedList.slice(indexFrom, indexFrom + $scope.itemsPerPage);
         };
 
         $scope.initPage = function(){

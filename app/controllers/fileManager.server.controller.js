@@ -19,7 +19,7 @@ exports.listFTP = function(req, res){
     
     var c = new Client();
     c.on('ready', function() {
-        c.list(currentDir, function(err, list) {
+        c.list(req.dir, function(err, list) {
             if (err) throw err;
             console.log('File list ' + list);
             c.end();
@@ -33,7 +33,7 @@ exports.listFTP = function(req, res){
     catch(err){
         console.error('Error connecting to FTP');
         res.status(400).send({
-				message: errorHandler.getErrorMessage(err)})
+				message: errorHandler.getErrorMessage(err)});
     }
 };
 
@@ -50,8 +50,8 @@ function fileNameInfo (fileName){
     var year = components[3];
     var month = components[4];
     var name = components[5];
-    var date = name.substring(name.lastIndexOf('-')+1, name.lastIndexOf('.')).substring(0,8)
-    var dateDate = Date.parse(date.substring(0,4) + "-" + date.substring(4,6) + "-" + date.substring(6,8))
+    var date = name.substring(name.lastIndexOf('-')+1, name.lastIndexOf('.')).substring(0,8);
+    var dateDate = Date.parse(date.substring(0,4) + "-" + date.substring(4,6) + "-" + date.substring(6,8));
     return {
         market: marketCode,
         marketType: marketType,
@@ -96,7 +96,7 @@ function getMarketFile(filePath, done){
  * Imports a file
 **/
 exports.importFile = function(req, res) {
-    var filePath = req.params.path
+    var filePath = req.params.path;
     //connect to ftp server
     var c = new Client();
     //download a file
@@ -109,22 +109,21 @@ exports.importFile = function(req, res) {
             if (err) throw err;
             stream.once('close', function() { c.end(); });
             
-            var fileContents = ''
+            var fileContents = '';
             stream.on('data',function(buffer){
                 fileContents += buffer;
 //                console.log('on readable data ' + buffer);
             }); 
             
             stream.on('end',function(){
-                var lines = fileContents.split("\n")
+                var lines = fileContents.split("\n");
                 getMarketFile(filePath, function(marketFileDoc){
                     //insert Measures
                     for (var i = 1, len = lines.length; i < len; i++) {
-                        var fields = lines[i].split(',')
+                        var fields = lines[i].split(',');
                         if(fields.length>1){
-                            var dateFrom = fields[0].substring(6,10) + "-" + fields[0].substring(0,2) + "-" + fields[0].substring(3,5) + "T" + fields[0].substring(11)
-                            var dateTo = fields[1].substring(6,10) + "-" + fields[1].substring(0,2) + "-" + fields[1].substring(3,5) + "T" + fields[1].substring(11)
-                            //TODO: add hour
+                            var dateFrom = fields[0].substring(6,10) + "-" + fields[0].substring(0,2) + "-" + fields[0].substring(3,5) + "T" + fields[0].substring(11);
+                            var dateTo = fields[1].substring(6,10) + "-" + fields[1].substring(0,2) + "-" + fields[1].substring(3,5) + "T" + fields[1].substring(11);
                             var measureDoc = new DayAheadData({
                                 marketFile : marketFileDoc, 
                                 market: marketFileDoc.market,
@@ -165,7 +164,7 @@ exports.importFile = function(req, res) {
     catch(err){
         console.error('Error connecting to FTP');
         res.status(400).send({
-				message: errorHandler.getErrorMessage(err)})
+				message: errorHandler.getErrorMessage(err)});
     }
 };
 
@@ -174,7 +173,7 @@ exports.importFile = function(req, res) {
 **/
                                     
 exports.listLoadedFiles = function(req, res) {
-    var parameters = req.body
+    var parameters = req.body;
     console.log('Listing loaded files ' + req.body.toString());
     var query = MarketFile.find();
     if(parameters.dateFrom && parameters.dateFrom != "undefined" && parameters.dateFrom != "null"){

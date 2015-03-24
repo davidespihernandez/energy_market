@@ -7,7 +7,7 @@ angular.module('fileManager').config(['$stateProvider',
 		$stateProvider.
 		state('app.fileManager', {
 			url: '/fileManager',
-			templateUrl: 'modules/marketFiles/views/fileManager.client.view.html'
+			templateUrl: 'modules/fileManager/views/fileManager.client.view.html'
 		});
 	}
 ]);

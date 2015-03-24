@@ -19,4 +19,4 @@ var MarketFileSchema = mongoose.Schema({
     date: {type: Date, index: true}
 });
 
-mongoose.model('MarketFile', marketFileSchema);
+mongoose.model('MarketFile', MarketFileSchema);

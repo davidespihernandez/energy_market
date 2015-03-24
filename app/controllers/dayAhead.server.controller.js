@@ -25,7 +25,7 @@ exports.distinctLocations = function (req, res){
  */
 
 exports.search = function(req, res) {
-    var parameters = req.body
+    var parameters = req.body;
     console.log('Searching data ' + parameters.toString());
     var query = DayAheadData.find();
     if(parameters.dateFrom && parameters.dateFrom != "undefined" && parameters.dateFrom != "null"){
