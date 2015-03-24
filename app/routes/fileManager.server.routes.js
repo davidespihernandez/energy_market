@@ -4,16 +4,16 @@
  * Module dependencies.
  */
 var users = require('../../app/controllers/users.server.controller'),
-	fileManager = require('../../app/controllers/fileManager.server.controller');
+	fileManager = require('../../app/controllers/filemanager.server.controller');
 
 module.exports = function(app) {
-	// FileManager Routes
+	// Filemanager Routes
 
-	app.route('/fileManager/:dir')
+	app.route('/filemanager/:dir')
 		.get(users.requiresLogin, fileManager.listFTP)
 		.post(users.requiresLogin, fileManager.importFile);
 
-	app.route('/loadedFiles')
+	app.route('/loadedfiles')
 		.get(users.requiresLogin, fileManager.listLoadedFiles);
     
 };

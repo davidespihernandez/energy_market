@@ -1,13 +1,13 @@
 'use strict';
 
 // Setting up route
-angular.module('fileManager').config(['$stateProvider',
+angular.module('filemanager').config(['$stateProvider',
 	function($stateProvider) {
 		// Articles state routing
 		$stateProvider.
-		state('app.fileManager', {
-			url: '/fileManager',
-			templateUrl: 'modules/fileManager/views/fileManager.client.view.html'
+		state('app.filemanager', {
+			url: '/filemanager',
+			templateUrl: 'modules/filemanager/views/filemanager.client.view.html'
 		});
 	}
 ]);

@@ -1,14 +1,14 @@
 'use strict';
 
 //Articles service used for communicating with the articles REST endpoints
-angular.module('fileManager').factory('FileManager', ['$resource',
+angular.module('filemanager').factory('Files', ['$resource',
 	function($resource) {
-		return $resource('/fileManager/:dir', { dir: '@dir' });
+		return $resource('/filemanager/:dir', { dir: '@dir' });
 	}
 ]);
 
-angular.module('fileManager').factory('LoadedFiles', ['$resource',
+angular.module('filemanager').factory('LoadedFiles', ['$resource',
 	function($resource) {
-		return $resource('/loadedFiles', {});
+		return $resource('/loadedfiles', {});
 	}
 ]);

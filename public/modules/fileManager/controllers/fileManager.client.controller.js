@@ -1,10 +1,10 @@
 'use strict';
 
-angular.module('fileManager').controller('FileManagerController', ['$scope', '$stateParams', '$location', 'Authentication', 'FileManager', 'LoadedFiles',
-	function($scope, $stateParams, $location, Authentication, FileManager, LoadedFiles) {
+angular.module('filemanager').controller('FilemanagerController', ['$scope', '$stateParams', '$location', 'Authentication', 'Files', 'LoadedFiles',
+	function($scope, $stateParams, $location, Authentication, Files, LoadedFiles) {
 		$scope.authentication = Authentication;
 
-        console.log("FileListController!");
+        console.log("FileManagerController!");
         $scope.currentDirectory = ''; //default dir
         $scope.showFileDownloading = false;
         $scope.showFilesLoading = false;
@@ -56,7 +56,7 @@ angular.module('fileManager').controller('FileManagerController', ['$scope', '$s
             $scope.currentDirectory = $scope.currentDirectory + "/" + dirName;
             $scope.currentDirectoryComponents = $scope.splitCurrentDirectory();
             $scope.showFilesLoading = true;
-            $scope.fileList = FileManager.query({dir: $scope.currentDirectory}, function(){
+            $scope.fileList = Files.query({dir: $scope.currentDirectory}, function(){
                 console.log('Finished load dirs ');
                 $scope.showFilesLoading = false;
             });
@@ -67,7 +67,7 @@ angular.module('fileManager').controller('FileManagerController', ['$scope', '$s
             $scope.currentDirectoryComponents = $scope.splitCurrentDirectory();
             console.log("Previous dir " + $scope.currentDirectory);
             $scope.showFilesLoading = true;
-            $scope.fileList = FileManager.query({dir: $scope.currentDirectory}, function(){
+            $scope.fileList = Files.query({dir: $scope.currentDirectory}, function(){
                 console.log('Finished load previous dir ');
                 $scope.showFilesLoading = false;
             });
@@ -78,7 +78,7 @@ angular.module('fileManager').controller('FileManagerController', ['$scope', '$s
             $scope.currentDirectory = dirName;
             $scope.currentDirectoryComponents = $scope.splitCurrentDirectory();
             $scope.showFilesLoading = true;
-            $scope.fileList = FileManager.query({dir: $scope.currentDirectory}, function(){
+            $scope.fileList = Files.query({dir: $scope.currentDirectory}, function(){
                 console.log('Finished set dir dir ');
                 $scope.showFilesLoading = false;
             });
@@ -96,7 +96,7 @@ angular.module('fileManager').controller('FileManagerController', ['$scope', '$s
     //            var indexFrom = ($scope.currentPage-1)*$scope.itemsPerPage;
     //            $scope.pagedFileLoadedList = $scope.fileLoadedList.slice(indexFrom, indexFrom + $scope.itemsPerPage);
     //        });
-            $scope.fileLoadedList = $scope.fileList = LoadedFiles.query({dateFrom: $scope.dateFromInput, dateTo: $scope.dateToInput}, function(){
+            $scope.fileLoadedList = LoadedFiles.query({dateFrom: $scope.dateFromInput, dateTo: $scope.dateToInput}, function(){
                 console.log('Finished list loaded files ');
                 $scope.totalItems = $scope.fileLoadedList.length;
                 console.log('Total files ' + $scope.totalItems);
@@ -114,9 +114,10 @@ angular.module('fileManager').controller('FileManagerController', ['$scope', '$s
     //            //reload files
     //            $scope.listLoadedFiles();
     //        });
-            $scope.fileList = FileManager.post({dir: fullPath}, function(){
+            $scope.fileList = Files.save({dir: fullPath}, function(){
                 console.log('Finished load file ');
                 $scope.showFileDownloading = false;
+                $scope.listLoadedFiles();
             });
         };
 
@@ -127,12 +128,31 @@ angular.module('fileManager').controller('FileManagerController', ['$scope', '$s
         };
 
         $scope.initPage = function(){
+            //configure the table
+            console.log('table elem -> ' + angular.element('#loadedFilesTable'));
+/*
+            angular.element('#loadedFilesTable').dataTable({
+                    'paging':   true,  // Table pagination
+                    'ordering': true,  // Column ordering 
+                    'info':     true,  // Bottom left status text
+                    // Text translation options
+                    // Note the required keywords between underscores (e.g _MENU_)
+                    oLanguage: {
+                        sSearch:      'Search all columns:',
+                        sLengthMenu:  '_MENU_ records per page',
+                        info:         'Showing page _PAGE_ of _PAGES_',
+                        zeroRecords:  'Nothing found - sorry',
+                        infoEmpty:    'No records available',
+                        infoFiltered: '(filtered from _MAX_ total records)'
+                    }
+                });            
+*/
             $scope.currentDirectoryComponents = $scope.splitCurrentDirectory();
 
             //call the function to show loaded files
             $scope.listLoadedFiles();
             //list current dir files
-            $scope.setDir('Markets/DA/LMP_By_SETTLEMENT_LOC');
+            $scope.setDir('Markets/DA/LMP_By_SETTLEMENT_LOC/2015/03');
         };
         
 	}

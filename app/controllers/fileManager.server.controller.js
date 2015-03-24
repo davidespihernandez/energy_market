@@ -15,11 +15,11 @@ var mongoose = require('mongoose'),
  */
 
 exports.listFTP = function(req, res){
-    console.log('Listing files for ' + req.dir);
+    console.log('Listing files for ' + req.params.dir);
     
     var c = new Client();
     c.on('ready', function() {
-        c.list(req.dir, function(err, list) {
+        c.list(req.params.dir, function(err, list) {
             if (err) throw err;
             console.log('File list ' + list);
             c.end();
@@ -96,7 +96,7 @@ function getMarketFile(filePath, done){
  * Imports a file
 **/
 exports.importFile = function(req, res) {
-    var filePath = req.params.path;
+    var filePath = req.params.dir;
     //connect to ftp server
     var c = new Client();
     //download a file
@@ -173,8 +173,8 @@ exports.importFile = function(req, res) {
 **/
                                     
 exports.listLoadedFiles = function(req, res) {
-    var parameters = req.body;
-    console.log('Listing loaded files ' + req.body.toString());
+    var parameters = req.query;
+    console.log('Listing loaded files ' + req.query.toString());
     var query = MarketFile.find();
     if(parameters.dateFrom && parameters.dateFrom != "undefined" && parameters.dateFrom != "null"){
         console.log('Date from ' + parameters.dateFrom);

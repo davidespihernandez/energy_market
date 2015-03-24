@@ -36,6 +36,10 @@ module.exports = {
 				'public/lib/oclazyload/dist/ocLazyLoad.js',
 				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js',
 				'public/lib/angular-loading-bar/build/loading-bar.js'
+//                'public/lib/datatables/media/js/jquery.dataTables.min.js',
+//                'public/lib/datatables-colvis/js/dataTables.colVis.js',
+//                'public/lib/datatable-bootstrap/js/dataTables.bootstrap.js',
+//                'public/lib/datatable-bootstrap/js/dataTables.bootstrapPagination.js'
 				// 'public/lib/jquery/dist/jquery.js',
 				// 'public/lib/angular/angular.js',
 				// 'public/lib/angular-resource/angular-resource.js',
