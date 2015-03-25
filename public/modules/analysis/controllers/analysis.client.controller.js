@@ -1,7 +1,45 @@
 'use strict';
 
-angular.module('analysis').controller('AnalysisController', ['$scope', '$stateParams', '$location', 'Authentication', 'AnalysisData', 'Locations',
-	function($scope, $stateParams, $location, Authentication, AnalysisData, Locations) {
+angular.module('analysis').controller('AnalysisController', ['$scope', '$timeout', '$stateParams', '$location', 'Authentication', 'AnalysisData', 'Locations',
+	function($scope, $timeout, $stateParams, $location, Authentication, AnalysisData, Locations) {
+        
+        //table
+      // Define global instance we'll use to destroy later
+      var dtInstance1;
+
+      $timeout(function(){
+
+        if ( ! $.fn.dataTable ) return;
+            console.log('Creating table');
+            $('#datatable1').dataTable({
+                'paging':   true,  // Table pagination
+                'ordering': true,  // Column ordering 
+                'info':     true,  // Bottom left status text
+                // Text translation options
+                // Note the required keywords between underscores (e.g _MENU_)
+                oLanguage: {
+                    sSearch:      'Search all columns:',
+                    sLengthMenu:  '_MENU_ records per page',
+                    info:         'Showing page _PAGE_ of _PAGES_',
+                    zeroRecords:  'Nothing found - sorry',
+                    infoEmpty:    'No records available',
+                    infoFiltered: '(filtered from _MAX_ total records)'
+                }
+            });
+          
+
+      });
+
+      // When scope is destroyed we unload all DT instances 
+      // Also ColVis requires special attention since it attaches
+      // elements to body and will not be removed after unload DT
+      $scope.$on('$destroy', function(){
+        dtInstance1.fnDestroy();
+        $('[class*=ColVis]').remove();
+      });
+        
+        
+        
 		$scope.authentication = Authentication;
         $scope.market = $stateParams.market;
         console.log('Analysis controller for market ' + $scope.market);
@@ -147,30 +185,12 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$statePa
 
         };
 
-        $scope.$on('create', function (event, chart) {
-            console.log('chart created!');
-            console.log(chart);
-        });    
+//        $scope.$on('create', function (event, chart) {
+//            console.log('chart created!');
+//            console.log(chart);
+//        });    
 
         $scope.initPage = function(){
-/*
-            angular.element('#datatable1').dataTable({
-                    'paging':   true,  // Table pagination
-                    'ordering': true,  // Column ordering 
-                    'info':     true,  // Bottom left status text
-                    // Text translation options
-                    // Note the required keywords between underscores (e.g _MENU_)
-                    oLanguage: {
-                        sSearch:      'Search all columns:',
-                        sLengthMenu:  '_MENU_ records per page',
-                        info:         'Showing page _PAGE_ of _PAGES_',
-                        zeroRecords:  'Nothing found - sorry',
-                        infoEmpty:    'No records available',
-                        infoFiltered: '(filtered from _MAX_ total records)'
-                    }
-                });
-*/
-            
             $scope.fillLocations(function(){
                 $scope.search();
             });
