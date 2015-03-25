@@ -50,7 +50,7 @@ function fileNameInfo (fileName){
     var marketType = components[2];
     var year = components[3];
     var month = components[4];
-    var name, date, dateDate
+    var name, date, dateDate;
     if("DA" === marketCode){
         name = components[5];
         date = name.substring(name.lastIndexOf('-')+1, name.lastIndexOf('.')).substring(0,8);

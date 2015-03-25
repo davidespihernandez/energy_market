@@ -6,8 +6,8 @@ angular.module('analysis').config(['$stateProvider',
 		// Articles state routing
 		$stateProvider.
 		state('app.analysis', {
-			url: '/analysis/:market',
-			templateUrl: 'modules/filemanager/views/analysis.client.view.html'
+			url: '/analysis',
+			templateUrl: 'modules/analysis/views/analysis.client.view.html'
 		});
 	}
 ]);

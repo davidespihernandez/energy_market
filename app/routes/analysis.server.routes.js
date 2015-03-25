@@ -9,10 +9,10 @@ var users = require('../../app/controllers/users.server.controller'),
 module.exports = function(app) {
 	// Analysis Routes
 
-	app.route('/analysis/:market')
+	app.route('/analysis')
 		.get(users.requiresLogin, analysis.search);
 
-	app.route('/analysis/:market/locations')
+	app.route('/analysis/locations')
 		.get(users.requiresLogin, analysis.distinctLocations);
     
 };

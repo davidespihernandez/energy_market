@@ -1,10 +1,10 @@
 'use strict';
 
 angular.module('analysis').controller('AnalysisController', ['$scope', '$stateParams', '$location', 'Authentication', 'AnalysisData', 'Locations',
-	function($scope, $stateParams, $location, Authentication, Files, LoadedFiles) {
+	function($scope, $stateParams, $location, Authentication, AnalysisData, Locations) {
 		$scope.authentication = Authentication;
         $scope.market = $stateParams.market;
-        console.log('Analysis controller for market ' + market);
+        console.log('Analysis controller for market ' + $scope.market);
         $scope.panelClass = "panel-body";
 
         console.log("AnalysisController!");
@@ -12,7 +12,7 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$statePa
         $scope.dateToInput = "";
         $scope.locationInput = "";
         $scope.dataList = [];
-        $scope.pageDataList = []
+        $scope.pageDataList = [];
         $scope.graphSelectedSeries = "ALL";
         $scope.locations = [];
         $scope.averageLMP = 0; $scope.averageMLC = 0; $scope.averageMCC = 0; $scope.averageMEC = 0; 
@@ -53,10 +53,16 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$statePa
         };
 
         $scope.toUTCDate = function(dateStr){
-            var date = new Date(dateStr)
+            var date = new Date(dateStr);
             var _utc = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(),  date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
             return _utc;
         };
+        
+        function pad(n, width, z) {
+          z = z || '0';
+          n = n + '';
+          return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+        }
 
         $scope.toUTCDateString = function(dateStr){
             var date = new Date(dateStr);
@@ -100,7 +106,7 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$statePa
         $scope.search = function(){
             console.log("Searching ");
             $scope.panelClass = "panel-body whirl standard";
-            $scope.dataList = AnalysisData.query({dateFrom: $scope.dateFromInput, dateTo: $scope.dateToInput}, function(){
+            $scope.dataList = AnalysisData.query({market: $scope.marketInput, location: $scope.locationInput, dateFrom: $scope.dateFromInput, dateTo: $scope.dateToInput}, function(){
                 $scope.panelClass = "panel-body";
                 $scope.totalItems = $scope.dataList.length;
                 var indexFrom = ($scope.currentPage-1)*$scope.itemsPerPage;
@@ -116,9 +122,10 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$statePa
         };
 
         $scope.fillLocations = function(callback){
-            $scope.locations = Locations.query(function(){
+            console.log("searching locations for " + $scope.marketInput);
+            $scope.locations = Locations.query({market: $scope.marketInput }, function(){
                 if($scope.locations.length>0){
-                    $scope.locationInput = $scope.locations[0]
+                    $scope.locationInput = $scope.locations[0].toString();
                     console.log('First location ' + $scope.locationInput);
                 }
                 callback();                
@@ -128,7 +135,7 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$statePa
         $scope.exportData = function(){
             var finalData = [ ['Interval', 'Settlement_Location', 'Pnode', 'LMP', 'MLC', 'MCC', 'MEC'] ];
             $scope.dataList.forEach(function(item){
-                finalData.push( [$scope.toUTCDateString(item.Interval), item.Settlement_Location, item.Pnode, item.LMP, item.MLC, item.MCC, item.MEC] )
+                finalData.push( [$scope.toUTCDateString(item.Interval), item.Settlement_Location, item.Pnode, item.LMP, item.MLC, item.MCC, item.MEC] );
             });
             return(finalData);
         };
@@ -136,7 +143,7 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$statePa
         $scope.pageChanged = function(){
             console.log('Page changed to ' + $scope.currentPage);
             var indexFrom = ($scope.currentPage-1)*$scope.itemsPerPage;
-            $scope.pageDataList = $scope.dataList.slice(indexFrom, indexFrom + $scope.itemsPerPage)
+            $scope.pageDataList = $scope.dataList.slice(indexFrom, indexFrom + $scope.itemsPerPage);
 
         };
 
@@ -146,6 +153,20 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$statePa
         });    
 
         $scope.initPage = function(){
+            angular.element('#datetimepicker1').datetimepicker({
+                                      icons: {
+                                          time: 'fa fa-clock-o',
+                                          date: 'fa fa-calendar',
+                                          up: 'fa fa-chevron-up',
+                                          down: 'fa fa-chevron-down',
+                                          previous: 'fa fa-chevron-left',
+                                          next: 'fa fa-chevron-right',
+                                          today: 'fa fa-crosshairs',
+                                          clear: 'fa fa-trash',
+                                          format: 'dd-MMMM-yyyy'
+                                        }
+                                    });
+            
             $scope.fillLocations(function(){
                 $scope.search();
             });

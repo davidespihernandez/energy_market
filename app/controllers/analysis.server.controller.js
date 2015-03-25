@@ -15,13 +15,14 @@ var mongoose = require('mongoose'),
  */
 
 exports.distinctLocations = function (req, res){
-    console.log('Distinct locations for ' + req.params.market);
-    var market = req.params.market;
+    console.log('Distinct locations for ' + req.query.market);
+    var market = req.query.market;
     var model = DayAheadData;
     if("RTBM"===market){
         model = RealTimeData;
     }
     model.distinct('Settlement_Location', function(err, locations){
+        console.log("Retrieved locations: " + locations.length);
         res.json(locations);
     });        
 };
@@ -53,7 +54,7 @@ exports.search = function(req, res) {
 
     query.sort({ Interval: 'asc' }).exec(function (err, data) {
         if (err) return console.error(err);
-        //console.log("Return data -> " + measures.toString());
+        console.log("Return data -> " + data.length);
         res.json(data);
     });
 };                                    

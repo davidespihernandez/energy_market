@@ -13,8 +13,13 @@ module.exports = {
 	assets: {
 		lib: {
 			css: [
-				// 'public/lib/bootstrap/dist/css/bootstrap.css',
-				// 'public/lib/bootstrap/dist/css/bootstrap-theme.css',
+				 'public/lib/angular-chart.js/dist/angular-chart.css',
+				 'public/lib/datatables-colvis/css/dataTables.colVis.css',
+				 'public/lib/datatable-bootstrap/css/dataTables.bootstrap.css',
+				 'public/lib/simple-line-icons/css/simple-line-icons.css',
+				 'public/lib/animate.css/animate.min.css',
+				 'public/lib/whirl/dist/whirl.css',
+                 'public/lib/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css'
 			],
 			js: [
 				'public/lib/jquery/dist/jquery.js',
@@ -35,11 +40,21 @@ module.exports = {
 				'public/lib/angular-translate-storage-cookie/angular-translate-storage-cookie.js',
 				'public/lib/oclazyload/dist/ocLazyLoad.js',
 				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js',
-				'public/lib/angular-loading-bar/build/loading-bar.js'
-//                'public/lib/datatables/media/js/jquery.dataTables.min.js',
-//                'public/lib/datatables-colvis/js/dataTables.colVis.js',
-//                'public/lib/datatable-bootstrap/js/dataTables.bootstrap.js',
-//                'public/lib/datatable-bootstrap/js/dataTables.bootstrapPagination.js'
+				'public/lib/angular-loading-bar/build/loading-bar.js',
+                'public/lib/datatables/media/js/jquery.dataTables.min.js',
+                'public/lib/datatables-colvis/js/dataTables.colVis.js',
+                'public/lib/datatable-bootstrap/js/dataTables.bootstrap.js',
+                'public/lib/datatable-bootstrap/js/dataTables.bootstrapPagination.js',
+                'public/lib/Chart.js/Chart.js',
+                'public/lib/angular-chart.js/dist/angular-chart.js',
+                'public/lib/modernizr/modernizr.js',
+                'public/lib/jQuery-Storage-API/jquery.storageapi.js',
+                'public/lib/animo.js/animo.js',
+                'public/lib/angular-chart.js/dist/angular-chart.js',
+                'public/lib/slimScroll/jquery.slimscroll.min.js',
+                'public/lib/jquery-localize-i18n/dist/jquery.localize.js',
+                'public/lib/moment/min/moment.min.js',
+                'public/lib/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js'
 				// 'public/lib/jquery/dist/jquery.js',
 				// 'public/lib/angular/angular.js',
 				// 'public/lib/angular-resource/angular-resource.js',

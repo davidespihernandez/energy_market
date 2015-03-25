@@ -4,40 +4,41 @@
             <div class="col-lg-5">
                 <div class="panel panel-default">
                     <div class="panel-heading">Available market data</div>
-                        <div class="{{filesPanelClass}}">
-                            <div class="table-responsive">
-                                <ul class="list-inline">
-                                    <li><i class="fa fa-folder-open-o"></i></li>
-                                    <li ng-repeat="data in currentDirectoryComponents">
-                                        <a ng-click="setDir(data.subDirFullString)">{{data.subDirString}}</a> / 
-                                    </li>
-                                </ul>
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Size</th>
-                                            <th width="40px"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr ng-repeat="file in fileList">
-                                            <td ng-if="file.type === 'd'">
-                                                <a ng-click="listDir(file.name)">{{file.name}}</a>
-                                            </td>
-                                            <td ng-if="file.type != 'd'">
-                                                {{file.name}}
-                                            </td>
-                                            <td>{{file.size/1000000 | number : 2}} (MB)</td>
-                                            <td ng-if="file.type === 'd'">
+                    <div class="{{filesPanelClass}}">
+                        <div class="table-responsive">
+                            <ul class="list-inline">
+                                <li><i class="fa fa-folder-open-o"></i></li>
+                                <li ng-repeat="data in currentDirectoryComponents">
+                                    <a ng-click="setDir(data.subDirFullString)">{{data.subDirString}}</a> / 
+                                </li>
+                            </ul>
 
-                                            </td>
-                                            <td ng-if="file.type != 'd'">
-                                                <button class="btn btn-default btn-xs" ng-click="loadFile(file.name)"><em class="icon-cloud-download"></em></button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                              </table>
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Size</th>
+                                        <th width="40px"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="file in fileList">
+                                        <td ng-if="file.type === 'd'">
+                                            <a ng-click="listDir(file.name)">{{file.name}}</a>
+                                        </td>
+                                        <td ng-if="file.type != 'd'">
+                                            {{file.name}}
+                                        </td>
+                                        <td>{{file.size/1000000 | number : 2}} (MB)</td>
+                                        <td ng-if="file.type === 'd'">
+
+                                        </td>
+                                        <td ng-if="file.type != 'd'">
+                                            <button class="btn btn-default btn-xs" ng-click="loadFile(file.name)"><em class="icon-cloud-download"></em></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                          </table>
                         </div>
                     </div>
                 </div>
