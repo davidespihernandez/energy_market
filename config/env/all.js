@@ -19,7 +19,8 @@ module.exports = {
 				 'public/lib/simple-line-icons/css/simple-line-icons.css',
 				 'public/lib/animate.css/animate.min.css',
 				 'public/lib/whirl/dist/whirl.css',
-                 'public/lib/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css'
+                 'public/lib/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css',
+                 'public/lib/chosen_v1.2.0/chosen.min.css'
 			],
 			js: [
 				'public/lib/jquery/dist/jquery.js',
@@ -55,7 +56,8 @@ module.exports = {
                 'public/lib/jquery-localize-i18n/dist/jquery.localize.js',
                 'public/lib/moment/min/moment.min.js',
                 'public/lib/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
-                'public/lib/ng-csv.min.js'
+                'public/lib/ng-csv.min.js',
+                'public/lib/chosen_v1.2.0/chosen.jquery.min.js'
 				// 'public/lib/jquery/dist/jquery.js',
 				// 'public/lib/angular/angular.js',
 				// 'public/lib/angular-resource/angular-resource.js',

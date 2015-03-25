@@ -5,6 +5,7 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$timeout
         
         //table
       // Define global instance we'll use to destroy later
+/*
       var dtInstance1;
 
       $timeout(function(){
@@ -37,8 +38,7 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$timeout
         dtInstance1.fnDestroy();
         $('[class*=ColVis]').remove();
       });
-        
-        
+*/
         
 		$scope.authentication = Authentication;
         $scope.market = $stateParams.market;
@@ -191,6 +191,7 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$timeout
 //        });    
 
         $scope.initPage = function(){
+            $('.chosen-select').chosen();
             $scope.fillLocations(function(){
                 $scope.search();
             });
