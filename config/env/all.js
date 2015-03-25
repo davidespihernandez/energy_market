@@ -54,7 +54,8 @@ module.exports = {
                 'public/lib/slimScroll/jquery.slimscroll.min.js',
                 'public/lib/jquery-localize-i18n/dist/jquery.localize.js',
                 'public/lib/moment/min/moment.min.js',
-                'public/lib/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js'
+                'public/lib/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
+                'public/lib/ng-csv.min.js'
 				// 'public/lib/jquery/dist/jquery.js',
 				// 'public/lib/angular/angular.js',
 				// 'public/lib/angular-resource/angular-resource.js',
@@ -69,7 +70,7 @@ module.exports = {
 		},
 		css: [
 			// 'public/modules/**/css/*.css'
-			'public/application.min.css'
+            'public/application.min.css'
 		],
 		js: [
 			'public/config.js',

@@ -7,6 +7,7 @@ var mongoose = require('mongoose'),
 	errorHandler = require('./errors.server.controller'),
 	MarketFile = mongoose.model('MarketFile'),
     DayAheadData = mongoose.model('DayAheadData'),
+    RealTimeData = mongoose.model('RealTimeData'),
 	_ = require('lodash'),
     Client = require('ftp');
 
@@ -21,7 +22,6 @@ exports.listFTP = function(req, res){
     c.on('ready', function() {
         c.list(req.params.dir, function(err, list) {
             if (err) throw err;
-            console.log('File list ' + list);
             c.end();
             res.json(list);
         });
@@ -133,7 +133,12 @@ exports.importFile = function(req, res) {
                         if(fields.length>1){
                             var dateFrom = fields[0].substring(6,10) + "-" + fields[0].substring(0,2) + "-" + fields[0].substring(3,5) + "T" + fields[0].substring(11);
                             var dateTo = fields[1].substring(6,10) + "-" + fields[1].substring(0,2) + "-" + fields[1].substring(3,5) + "T" + fields[1].substring(11);
-                            var measureDoc = new DayAheadData({
+                            var measureType = DayAheadData;
+                            if("RTBM" === marketFileDoc.market){
+                                measureType = RealTimeData;
+                            }
+                                
+                            var measureDoc = new measureType({
                                 marketFile : marketFileDoc, 
                                 market: marketFileDoc.market,
                                 marketType: marketFileDoc.marketType,

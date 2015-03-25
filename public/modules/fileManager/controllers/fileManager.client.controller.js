@@ -118,6 +118,7 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
                 console.log('Finished load file ');
                 $scope.showFileDownloading = false;
                 $scope.listLoadedFiles();
+                $scope.setDir($scope.currentDirectory);
             });
         };
 
@@ -129,30 +130,12 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
 
         $scope.initPage = function(){
             //configure the table
-            console.log('table elem -> ' + angular.element('#loadedFilesTable'));
-/*
-            angular.element('#loadedFilesTable').dataTable({
-                    'paging':   true,  // Table pagination
-                    'ordering': true,  // Column ordering 
-                    'info':     true,  // Bottom left status text
-                    // Text translation options
-                    // Note the required keywords between underscores (e.g _MENU_)
-                    oLanguage: {
-                        sSearch:      'Search all columns:',
-                        sLengthMenu:  '_MENU_ records per page',
-                        info:         'Showing page _PAGE_ of _PAGES_',
-                        zeroRecords:  'Nothing found - sorry',
-                        infoEmpty:    'No records available',
-                        infoFiltered: '(filtered from _MAX_ total records)'
-                    }
-                });            
-*/
             $scope.currentDirectoryComponents = $scope.splitCurrentDirectory();
 
             //call the function to show loaded files
             $scope.listLoadedFiles();
             //list current dir files
-            $scope.setDir('Markets/DA/LMP_By_SETTLEMENT_LOC/2015/03');
+            $scope.setDir('Markets/RTBM/LMP_By_SETTLEMENT_LOC/2015/03');
         };
         
 	}

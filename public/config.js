@@ -18,7 +18,8 @@ var ApplicationConfiguration = (function() {
                                                'ngSanitize', 
                                                'ngResource', 
                                                'ui.utils', 
-                                               'chart.js'];
+                                               'chart.js',
+                                               'ngCsv'];
     
 	// Add a new vertical module
 	var registerModule = function(moduleName, dependencies) {

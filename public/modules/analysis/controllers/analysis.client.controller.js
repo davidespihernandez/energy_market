@@ -153,19 +153,23 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$statePa
         });    
 
         $scope.initPage = function(){
-            angular.element('#datetimepicker1').datetimepicker({
-                                      icons: {
-                                          time: 'fa fa-clock-o',
-                                          date: 'fa fa-calendar',
-                                          up: 'fa fa-chevron-up',
-                                          down: 'fa fa-chevron-down',
-                                          previous: 'fa fa-chevron-left',
-                                          next: 'fa fa-chevron-right',
-                                          today: 'fa fa-crosshairs',
-                                          clear: 'fa fa-trash',
-                                          format: 'dd-MMMM-yyyy'
-                                        }
-                                    });
+/*
+            angular.element('#datatable1').dataTable({
+                    'paging':   true,  // Table pagination
+                    'ordering': true,  // Column ordering 
+                    'info':     true,  // Bottom left status text
+                    // Text translation options
+                    // Note the required keywords between underscores (e.g _MENU_)
+                    oLanguage: {
+                        sSearch:      'Search all columns:',
+                        sLengthMenu:  '_MENU_ records per page',
+                        info:         'Showing page _PAGE_ of _PAGES_',
+                        zeroRecords:  'Nothing found - sorry',
+                        infoEmpty:    'No records available',
+                        infoFiltered: '(filtered from _MAX_ total records)'
+                    }
+                });
+*/
             
             $scope.fillLocations(function(){
                 $scope.search();

@@ -56,7 +56,7 @@
               <div class="panel-body">
 
                   <div class="table-responsive">
-                      <table class="table">
+                      <table class="table table-striped">
                         <thead>
                             <tr>
                                 <th>Date</th>
@@ -122,6 +122,53 @@
                 </div>
             </div>
         </div>
-    </div>        
+    </div>     
+ <div class="content-wrapper">
+    <div class="container-fluid">
+    
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                  <!-- Default panel contents -->
+                  <div class="panel-heading"> 
+                      Data 
+                      <span class="pull-right">
+                          <button class="btn btn-primary btn-sm" type="button" ng-csv="exportData()" filename="market_export.csv"> <em class="fa fa-download"></em> Excel ({{totalItems}} rows) </button>
+                      </span>
+                  </div>
+                  <div class="panel-body">
+
+                          <table id="datatable1" class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Location</th>
+                                    <th>LMP <br />($/MWH)</th>
+                                    <th>MLC <br />($/MWH)</th>
+                                    <th>MCC <br />($/MWH)</th>
+                                    <th>MEC <br />($/MWH)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="data in dataList">                                
+                                    <td>{{toUTCDate(data.Interval) | date:'MM-dd-yyyy HH:mm'}}</td>
+                                    <td>{{data.Settlement_Location}}</td>
+                                    <td>{{data.LMP}}</td>
+                                    <td>{{data.MLC}}</td>
+                                    <td>{{data.MCC}}</td>
+                                    <td>{{data.MEC}}</td>
+                                </tr>
+                            </tbody>
+                          </table>
+                  </div>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+     </div>
+    </div>
+    
 </section>
 

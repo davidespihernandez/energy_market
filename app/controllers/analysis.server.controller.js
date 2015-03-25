@@ -33,8 +33,8 @@ exports.distinctLocations = function (req, res){
 
 exports.search = function(req, res) {
     var parameters = req.query;
-    var market = req.params.market;
-    console.log('Searching data for ' + req.params.market);
+    var market = req.query.market;
+    console.log('Searching data for ' + req.query.market);
     var query = DayAheadData.find();
     if("RTBM"===market){
         query = RealTimeData.find();
