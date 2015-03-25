@@ -7,6 +7,7 @@ var mongoose = require('mongoose'),
 	errorHandler = require('./errors.server.controller'),
 	MarketFile = mongoose.model('MarketFile'),
     DayAheadData = mongoose.model('DayAheadData'),
+    RealTimeData = mongoose.model('RealTimeData'),
 	_ = require('lodash');
 
 /**
@@ -14,8 +15,13 @@ var mongoose = require('mongoose'),
  */
 
 exports.distinctLocations = function (req, res){
-    console.log('Distinct locations');
-    DayAheadData.distinct('Settlement_Location', function(err, locations){
+    console.log('Distinct locations for ' + req.params.market);
+    var market = req.params.market;
+    var model = DayAheadData;
+    if("RTBM"===market){
+        model = RealTimeData;
+    }
+    model.distinct('Settlement_Location', function(err, locations){
         res.json(locations);
     });        
 };
@@ -25,9 +31,13 @@ exports.distinctLocations = function (req, res){
  */
 
 exports.search = function(req, res) {
-    var parameters = req.body;
-    console.log('Searching data ' + parameters.toString());
+    var parameters = req.query;
+    var market = req.params.market;
+    console.log('Searching data for ' + req.params.market);
     var query = DayAheadData.find();
+    if("RTBM"===market){
+        query = RealTimeData.find();
+    }
     if(parameters.dateFrom && parameters.dateFrom != "undefined" && parameters.dateFrom != "null"){
         console.log('Date from ' + parameters.dateFrom);
         query = query.where('date').gte(parameters.dateFrom);
@@ -41,9 +51,9 @@ exports.search = function(req, res) {
         query = query.where('Settlement_Location').equals(parameters.location);
     }
 
-    query.sort({ Interval: 'asc' }).exec(function (err, measures) {
+    query.sort({ Interval: 'asc' }).exec(function (err, data) {
         if (err) return console.error(err);
         //console.log("Return data -> " + measures.toString());
-        res.json(measures);
+        res.json(data);
     });
 };                                    

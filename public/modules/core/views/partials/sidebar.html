@@ -26,6 +26,9 @@
    <nav sidebar="" class="sidebar">
       <!-- START sidebar nav-->
       <ul class="nav">
+          <li class="nav-heading ">
+            <span data-localize="sidebar.heading.HEADER">Menu</span>
+          </li>          
          <li  ng-class="{active: ($uiRoute)}" 
               ng-repeat="item in menu.items | orderBy: 'position'" 
               ng-include="'sidebar-renderer.html'" 

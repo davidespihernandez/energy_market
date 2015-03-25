@@ -1,10 +1,10 @@
 <h3>FTP file management</h3>
 <section data-ng-controller="FilemanagerController" data-ng-init="initPage()">
         <div class="row">
-            <div class="col-xs-5">
+            <div class="col-lg-5">
                 <div class="panel panel-default">
                     <div class="panel-heading">Available market data</div>
-                        <div class="panel-body">
+                        <div class="{{filesPanelClass}}">
                             <div class="table-responsive">
                                 <ul class="list-inline">
                                     <li><i class="fa fa-folder-open-o"></i></li>
@@ -17,7 +17,7 @@
                                         <tr>
                                             <th>Name</th>
                                             <th>Size</th>
-                                            <th width="40px"><i ng-show="showFilesLoading" class="fa fa-refresh fa-spin text-right"></i></th>
+                                            <th width="40px"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -42,7 +42,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xs-7">
+            <div class="col-lg-7">
                 <div class="panel panel-default">
                   <!-- Default panel contents -->
                   <div class="panel-heading">Loaded files </div>

@@ -4,7 +4,7 @@ module.exports = {
 	app: {
 		title: 'Energy Market',
 		description: 'Energy Market data',
-		keywords: 'Energy Market, SPP'
+		keywords: 'Energy Market, SPP, Day Ahead, Real Time'
 	},
 	port: process.env.PORT || 3000,
 	templateEngine: 'swig',

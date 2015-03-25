@@ -41,6 +41,7 @@ exports.listFTP = function(req, res){
 /**
  * Receives a full path file name and extracts the info into an object
  * for example: Markets/DA/LMP_By_SETTLEMENT_LOC/2015/03/DA-LMP-SL-201503010100.csv
+ * or for RTBM ftp://pubftp.spp.org/Markets/RTBM/LMP_By_SETTLEMENT_LOC/2015/03/01/filename??.csv
 **/
 
 function fileNameInfo (fileName){
@@ -49,9 +50,17 @@ function fileNameInfo (fileName){
     var marketType = components[2];
     var year = components[3];
     var month = components[4];
-    var name = components[5];
-    var date = name.substring(name.lastIndexOf('-')+1, name.lastIndexOf('.')).substring(0,8);
-    var dateDate = Date.parse(date.substring(0,4) + "-" + date.substring(4,6) + "-" + date.substring(6,8));
+    var name, date, dateDate
+    if("DA" === marketCode){
+        name = components[5];
+        date = name.substring(name.lastIndexOf('-')+1, name.lastIndexOf('.')).substring(0,8);
+        dateDate = Date.parse(date.substring(0,4) + "-" + date.substring(4,6) + "-" + date.substring(6,8));
+    }
+    else if("RTBM" === marketCode){
+        name = components[6];
+        var day = components[5];
+        dateDate = Date.parse(year + "-" + month + "-" + day);
+    }
     return {
         market: marketCode,
         marketType: marketType,

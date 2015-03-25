@@ -1,0 +1,120 @@
+<h3>Data Analysis</h3>
+<section data-ng-controller="AnalysisController" data-ng-init="initPage()">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <!-- Default panel contents -->
+                    <div class="panel-heading">Data Review: Period and Location</div>
+                    <div class="panel-body">
+                        <form class="form-inline">
+                          <div class="form-group">
+                            <label for="dateFromInput">From</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" datepicker-popup="dd-MMMM-yyyy" ng-model="dateFromInput" is-open="openedFrom" ng-required="false" close-text="Close" />
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-default" ng-click="openFrom($event)"><em class="icon-calendar"></em></button>
+                                </span>
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <label for="dateToInput">To</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" datepicker-popup="dd-MMMM-yyyy" ng-model="dateToInput" is-open="openedTo" ng-required="false" close-text="Close" />
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-default" ng-click="openTo($event)"><em class="icon-calendar"></em></button>
+                                </span>
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <label for="locationInput">Location</label>
+                            <select class="form-control" ng-init="locationInput = locations[0]" ng-model="locationInput" ng-options="location for location in locations"></select>
+                          </div>
+                          <button class="btn btn-default" ng-click="search()"><em class="icon-magnifier"></em> Search</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <div class="row">
+            <div class="col-lg-5">
+                <div class="panel panel-default">
+                  <!-- Default panel contents -->
+                  <div class="panel-heading">
+                      Data
+                  </div>
+                  <div class="{{panelClass}}">
+                      <span class="pull-right">
+                          <button class="btn btn-primary btn-sm" type="button" ng-csv="exportData()" filename="market_export.csv"> <i class="glyphicon glyphicon-download-alt"></i> Excel ({{totalItems}} rows) </button>
+                      </span>
+
+                      <div class="table-responsive">
+                          <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Location</th>
+                                    <th>LMP ($/MWH)</th>
+                                    <th>MLC ($/MWH)</th>
+                                    <th>MCC ($/MWH)</th>
+                                    <th>MEC ($/MWH)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="data in pageDataList">                                
+                                    <td>{{toUTCDate(data.Interval) | date:'MM-dd-yyyy HH:mm'}}</td>
+                                    <td>{{data.Settlement_Location}}</td>
+                                    <td>{{data.LMP}}</td>
+                                    <td>{{data.MLC}}</td>
+                                    <td>{{data.MCC}}</td>
+                                    <td>{{data.MEC}}</td>
+                                </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        <pagination total-items="totalItems" ng-model="currentPage" items-per-page="itemsPerPage" class="pagination-sm" boundary-links="true" rotate="false" ng-change="pageChanged()"></pagination>
+                  </div>
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="panel panel-default">
+                    <!-- Default panel contents -->
+                    <div class="panel-heading">
+                        Data Review: Visual Reference
+                    </div>
+                    <div class="{{panelClass}}">
+                        <span class="pull-left">
+                            <ul class="list-inline">
+                                <li><b>Averages</b></li>
+                                <li>LMP <span class="badge">{{averageLMP}}</span></li>
+                                <li>MLC <span class="badge">{{averageMLC}}</span></li>
+                                <li>MCC <span class="badge">{{averageMCC}}</span></li>
+                                <li>MEC <span class="badge">{{averageMEC}}</span></li>
+                            </ul>
+                        </span>
+                        <span class="pull-right">
+                            <div class="btn-group" dropdown>
+                              <button type="button" class="btn btn-info dropdown-toggle" dropdown-toggle>
+                                {{graphSelectedSeries}} <span class="caret"></span>
+                              </button>
+                              <ul class="dropdown-menu" role="menu">
+                                <li><a ng-click="filterSeries('ALL')">ALL</a></li>
+                                <li class="divider"></li>
+                                <li><a ng-click="filterSeries('LMP')">LMP</a></li>
+                                <li><a ng-click="filterSeries('MLC')">MLC</a></li>
+                                <li><a ng-click="filterSeries('MCC')">MCC</a></li>
+                                <li><a ng-click="filterSeries('MEC')">MEC</a></li>
+                              </ul>
+                            </div>
+                        </span>
+
+                        <canvas id="line" class="chart chart-line" data="graphData" options="graphOptions" 
+                          labels="labels" legend="true" series="series" height="300px" labelsFilter="labelsFilter" 
+                          click="onClick">
+                        </canvas> 
+                    </div>
+                </div>
+            </div>
+        </div>        
+</section>
+

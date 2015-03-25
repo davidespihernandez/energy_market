@@ -7,7 +7,7 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
         console.log("FileManagerController!");
         $scope.currentDirectory = ''; //default dir
         $scope.showFileDownloading = false;
-        $scope.showFilesLoading = false;
+        $scope.filesPanelClass = "panel-body";
 
         $scope.currentPage = 1;
         $scope.itemsPerPage = 15;
@@ -55,10 +55,10 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
             console.log("Loading dir " + dirName);
             $scope.currentDirectory = $scope.currentDirectory + "/" + dirName;
             $scope.currentDirectoryComponents = $scope.splitCurrentDirectory();
-            $scope.showFilesLoading = true;
+            $scope.filesPanelClass = "panel-body whirl standard";
             $scope.fileList = Files.query({dir: $scope.currentDirectory}, function(){
                 console.log('Finished load dirs ');
-                $scope.showFilesLoading = false;
+                $scope.filesPanelClass = "panel-body";
             });
 
         };
@@ -66,10 +66,10 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
             $scope.currentDirectory = $scope.currentDirectory.substring(0, $scope.currentDirectory.lastIndexOf("/"));
             $scope.currentDirectoryComponents = $scope.splitCurrentDirectory();
             console.log("Previous dir " + $scope.currentDirectory);
-            $scope.showFilesLoading = true;
+            $scope.filesPanelClass = "panel-body whirl standard";
             $scope.fileList = Files.query({dir: $scope.currentDirectory}, function(){
                 console.log('Finished load previous dir ');
-                $scope.showFilesLoading = false;
+                $scope.filesPanelClass = "panel-body";
             });
         };
 
@@ -77,10 +77,10 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
             console.log("Set dir " + dirName);
             $scope.currentDirectory = dirName;
             $scope.currentDirectoryComponents = $scope.splitCurrentDirectory();
-            $scope.showFilesLoading = true;
+            $scope.filesPanelClass = "panel-body whirl standard";
             $scope.fileList = Files.query({dir: $scope.currentDirectory}, function(){
                 console.log('Finished set dir dir ');
-                $scope.showFilesLoading = false;
+                $scope.filesPanelClass = "panel-body";
             });
         };
 
