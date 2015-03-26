@@ -53,8 +53,6 @@ exports.search = function(req, res) {
         query = query.where('date').lte(parameters.dateTo);
     }
     if(parameters.locations && parameters.locations != "undefined" && parameters.locations != "null"){
-        console.log('Locations ');
-        console.log(parameters.locations);
         var locationsArray = [];
         if(Array.isArray(parameters.locations)){
             parameters.locations.forEach(function(locationObj){
@@ -65,7 +63,6 @@ exports.search = function(req, res) {
         else{
             var locationJSON = JSON.parse(parameters.locations);
             locationsArray.push(locationJSON.value);
-            console.log('Not array');
             console.log(locationJSON);
         }
         console.log(locationsArray);

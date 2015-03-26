@@ -8,14 +8,17 @@
                 <div class="panel-body">
                     <form class="form-inline">
                       <div class="form-group">
-                        <label for="marketInput">Market: </label>
-                        <select chosen="" ng-model="marketInput" ng-init="marketInput = 'DA'" class="chosen-select input-md form-control" style="width: 120px;">
-                             <option value="DA">Day Ahead</option>
-                             <option value="RTBM">Real Time</option>
-                        </select>
+                        <label for="comboboxes.selectedMarket">Market </label><br />
+                        <ui-select ng-model="comboboxes.selectedMarket" theme="bootstrap" ng-disabled="disabled" class="text-left" style="width: 120px;">
+                           <ui-select-match placeholder="Market...">{{$select.selected.label}}</ui-select-match>
+                           <ui-select-choices repeat="market in availableMarkets | filter: $select.search">
+                              <span ng-bind-html="market.label | highlight: $select.search"></span>
+                              <small ng-bind-html="market.value | highlight: $select.search"></small>
+                           </ui-select-choices>
+                        </ui-select>
                       </div>
                       <div class="form-group">
-                        <label for="dateFromInput">Start date: </label>
+                        <label for="dateFromInput">Start date </label><br />
                         <div class="input-group" style="width: 200px;">
                             <input type="text" class="form-control" datepicker-popup="dd-MMMM-yyyy" ng-model="dateFromInput" is-open="openedFrom" ng-required="false" close-text="Close" />
                             <span class="input-group-btn">
@@ -24,7 +27,7 @@
                         </div>
                       </div>
                       <div class="form-group">
-                        <label for="dateToInput">End date: </label>
+                        <label for="dateToInput">End date </label><br />
                         <div class="input-group" style="width: 200px;">
                             <input type="text" class="form-control" datepicker-popup="dd-MMMM-yyyy" ng-model="dateToInput" is-open="openedTo" ng-required="false" close-text="Close" />
                             <span class="input-group-btn">
@@ -33,7 +36,7 @@
                         </div>
                       </div>
                      <div class="form-group">
-                        <label for="comboboxes.selectedLocations">Locations: </label>
+                        <label for="comboboxes.selectedLocations">Locations </label><br />
                         <ui-select multiple="" ng-model="comboboxes.selectedLocations" theme="bootstrap" ng-disabled="disabled" style="width: 400px;">
                            <ui-select-match placeholder="Select locations...">{{$item.label}}</ui-select-match>
                            <ui-select-choices repeat="location in locations | filter:$select.search">
@@ -41,7 +44,9 @@
                            </ui-select-choices>
                         </ui-select>
                      </div>
-                      <button class="btn btn-success" ng-click="search()"><em class="icon-magnifier"></em> Search</button>
+                     <div class="form-group pull-right">
+                        <label> </label><br />
+                        <button class="btn btn-success" ng-click="search()"><em class="icon-magnifier"></em> Search</button>
                     </form>
                 </div>
             </div>
@@ -58,8 +63,7 @@
                       <button class="btn btn-primary btn-sm" type="button" ng-csv="exportData()" filename="market_export.csv"> <em class="fa fa-download"></em> Excel ({{totalItems}} rows) </button>
                   </span>
               </div>
-              <div class="panel-body">
-
+              <div class="{{panelClass}}">
                   <div class="table-responsive">
                       <table class="table table-striped">
                         <thead>
@@ -94,9 +98,9 @@
                 <div class="panel-heading">
                     Data Review: Visual Reference
                 </div>
-                <div class="{{panelClass}}">
+                <div class="panel-body">
                     <span class="pull-left">
-                        <ul class="list-inline">
+                        <ul class="list-inline" ng-show="showAveragesOnGraph">
                             <li><b>Averages</b></li>
                             <li>LMP <span class="label label-info">{{averageLMP}}</span></li>
                             <li>MLC <span class="label label-info">{{averageMLC}}</span></li>

@@ -3,51 +3,14 @@
 angular.module('analysis').controller('AnalysisController', ['$scope', '$timeout', '$stateParams', '$location', 'Authentication', 'AnalysisData', 'Locations',
 	function($scope, $timeout, $stateParams, $location, Authentication, AnalysisData, Locations) {
         
-        
-  $scope.comboboxes = {};
-  $scope.comboboxes.selectedLocations = [];
-        //table
-      // Define global instance we'll use to destroy later
-/*
-      var dtInstance1;
-
-      $timeout(function(){
-
-        if ( ! $.fn.dataTable ) return;
-            console.log('Creating table');
-            $('#datatable1').dataTable({
-                'paging':   true,  // Table pagination
-                'ordering': true,  // Column ordering 
-                'info':     true,  // Bottom left status text
-                // Text translation options
-                // Note the required keywords between underscores (e.g _MENU_)
-                oLanguage: {
-                    sSearch:      'Search all columns:',
-                    sLengthMenu:  '_MENU_ records per page',
-                    info:         'Showing page _PAGE_ of _PAGES_',
-                    zeroRecords:  'Nothing found - sorry',
-                    infoEmpty:    'No records available',
-                    infoFiltered: '(filtered from _MAX_ total records)'
-                }
-            });
-          
-
-      });
-
-      // When scope is destroyed we unload all DT instances 
-      // Also ColVis requires special attention since it attaches
-      // elements to body and will not be removed after unload DT
-      $scope.$on('$destroy', function(){
-        dtInstance1.fnDestroy();
-        $('[class*=ColVis]').remove();
-      });
-*/
 		$scope.authentication = Authentication;
-        console.log('Analysis controller');
+        $scope.availableMarkets = [{value: 'DA', label: 'Day Ahead'}, {value: 'RTBM', label: 'Real Time'}];
+        $scope.comboboxes = {};
+        $scope.comboboxes.selectedLocations = [];
+        $scope.comboboxes.selectedMarket = $scope.availableMarkets[0];
         $scope.panelClass = "panel-body";
 
         console.log("AnalysisController!");
-        $scope.marketInput = "DA";
         $scope.dateFromInput = "";
         $scope.dateToInput = "";
         $scope.dataList = [];
@@ -56,6 +19,7 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$timeout
         $scope.locations = [];
         $scope.averageLMP = 0; $scope.averageMLC = 0; $scope.averageMCC = 0; $scope.averageMEC = 0; 
         $scope.labels = [" ", " "];
+        $scope.showAveragesOnGraph;
 
         $scope.series = ["LMP", "MLC", "MCC", "MEC"];
         $scope.graphData = [
@@ -64,7 +28,8 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$timeout
         ];
         $scope.graphOptions = { 
                                 //datasetFill : false, 
-                                pointDotRadius : 3
+                                pointDotRadius : 3,
+                                legend: false
                               };
 
         $scope.currentPage = 1;
@@ -109,7 +74,7 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$timeout
             return _utc;
         };
 
-
+        //this method is for showing only 4 lines, for a single location
         $scope.fillGraphData = function(){
             var serie = $scope.graphSelectedSeries;
             $scope.labels = [];
@@ -141,31 +106,85 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$timeout
                 $scope.graphData.push(MEC);
             }
         };
+        
+        //method for multiple locations
+        $scope.fillGraphDataNew = function(){
+            var serie = $scope.graphSelectedSeries;
+            $scope.labels = [];
+            $scope.graphData = [];
+            var newSeries = [];
+            var newLabels = [];
+            var newData = {};
+            var avgLMP = 0, avgMLC = 0, avgMCC = 0, avgMEC = 0;
+            var measures = [serie];
+            if(serie === "ALL"){
+                measures = ["LMP", "MLC", "MCC", "MEC"];
+            }
+            $scope.dataList.forEach(function(item){
+                if(newLabels.indexOf($scope.toUTCDateString(item.Interval))===-1){
+                    newLabels.push($scope.toUTCDateString(item.Interval));
+                }
+                //check series
+                measures.forEach(function(measure){
+                    var seriesLabel = item.Settlement_Location + " - " + measure;
+                    if(newSeries.indexOf(seriesLabel)===-1){
+                        newSeries.push(seriesLabel);
+                        newData[seriesLabel] = [];
+                    }
+                    newData[seriesLabel].push(item[measure]);
+                });
+                avgLMP += item.LMP; avgMLC += item.MLC; avgMCC += item.MCC; avgMEC += item.MEC;
+            });
+            $scope.averageLMP = (avgLMP / $scope.dataList.length).toFixed(2); 
+            $scope.averageMLC = (avgMLC / $scope.dataList.length).toFixed(2); 
+            $scope.averageMCC = (avgMCC / $scope.dataList.length).toFixed(2); 
+            $scope.averageMEC = (avgMEC / $scope.dataList.length).toFixed(2); 
+            //put all the series data
+            for (var property in newData) {
+                if (newData.hasOwnProperty(property)) {
+                    $scope.graphData.push(newData[property]);
+                    newSeries.push(property);
+                }
+            }
+            $scope.showAveragesOnGraph = true;
+            if($scope.comboboxes.selectedLocations.length>1){
+                console.log('Not showing averages');
+                $scope.showAveragesOnGraph = false;
+            }
+            $scope.graphOptions.legend = false;
+            if(newSeries.length<=4){
+                $scope.graphOptions.legend = true;
+            }
+            $scope.labels = newLabels;
+            $scope.series = newSeries;
+        };
+        
 
         $scope.search = function(){
             console.log("Searching ");
             $scope.panelClass = "panel-body whirl standard";
-            $scope.dataList = AnalysisData.query({market: $scope.marketInput, locations: $scope.comboboxes.selectedLocations, dateFrom: $scope.dateFromInput, dateTo: $scope.dateToInput}, function(){
+            $scope.dataList = AnalysisData.query({market: $scope.comboboxes.selectedMarket.value, locations: $scope.comboboxes.selectedLocations, dateFrom: $scope.dateFromInput, dateTo: $scope.dateToInput}, function(){
                 $scope.panelClass = "panel-body";
                 $scope.totalItems = $scope.dataList.length;
                 var indexFrom = ($scope.currentPage-1)*$scope.itemsPerPage;
                 $scope.pageDataList = $scope.dataList.slice(indexFrom, indexFrom + $scope.itemsPerPage);
                 //fill the graph data
-                $scope.fillGraphData();
+                $scope.fillGraphDataNew();
             });
         };
 
         $scope.filterSeries = function(serie){
             $scope.graphSelectedSeries = serie;
-            $scope.fillGraphData();
+            $scope.fillGraphDataNew();
         };
 
         $scope.fillLocations = function(callback){
-            console.log("searching locations for " + $scope.marketInput);
-            $scope.locations = Locations.query( { market: $scope.marketInput }, function(){
+            console.log("searching locations for " + $scope.comboboxes.selectedMarket.value);
+            $scope.locations = Locations.query( { market: $scope.comboboxes.selectedMarket.value }, function(){
                 if($scope.locations.length>0){
                     $scope.comboboxes.selectedLocations.push($scope.locations[0]);
-                    console.log('First location %j', $scope.locations[0]);
+                    console.log('First location'); 
+                    console.log($scope.locations[0]);
                 }
                 callback();                
             });
