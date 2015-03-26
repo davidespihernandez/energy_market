@@ -58,3 +58,8 @@ exports.search = function(req, res) {
         res.json(data);
     });
 };                                    
+
+exports.dashboard = function(req, res) {
+    console.log('Loading dashboard for user ' + req.user.toString());
+};
+

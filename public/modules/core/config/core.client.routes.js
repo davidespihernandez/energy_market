@@ -30,6 +30,12 @@ function ($stateProvider, $locationProvider, $urlRouterProvider, helper) {
       // templateUrl: helper.basepath('app.html'),
       templateUrl: 'modules/core/views/home.client.view.html'
     })
+    .state('app.dashboard', {
+      url: '/dashboard',
+      // abstract: true,
+      // templateUrl: helper.basepath('app.html'),
+      templateUrl: 'modules/core/views/dashboard.client.view.html'
+    })
     // 
     // CUSTOM RESOLVES
     //   Add your own resolves properties

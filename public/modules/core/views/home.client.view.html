@@ -1,168 +1,24 @@
 <h3>
-   <!-- START Language list-->
-   <div class="pull-right">
-      <div dropdown="" is-open="language.listIsOpen" class="btn-group">
-         <button type="button" dropdown-toggle="" class="btn btn-default">{{language.selected}}
-            <span class="caret"></span>
-         </button>
-         <ul role="menu" class="dropdown-menu dropdown-menu-right animated fadeInUpShort">
-            <li ng-repeat="(localeId, langName) in language.available"><a ng-click="language.set(localeId, $event)">{{langName}}</a>
-            </li>
-         </ul>
-      </div>
-   </div>
-   <!-- END Language list    -->
-   Dashboard
+   Energy Market Data Analysis
+   <small>Welcome to the Energy Market Analysis Web!</small>
 </h3>
 <section>
-    
-                  <div class="row">
-                     <div class="col-lg-4">
-                        <!-- START widget-->
-                        <div class="panel widget">
-                           <div class="panel-body">
-                              <div class="clearfix">
-                                 <h3 class="pull-left text-muted mt0">300</h3>
-                                 <em class="pull-right text-muted fa fa-coffee fa-2x"></em>
-                              </div>
-                              <div data-sparkline="" data-type="line" data-height="80" data-width="100%" data-line-width="2" data-line-color="#7266ba" data-spot-color="#888" data-min-spot-color="#7266ba" data-max-spot-color="#7266ba" data-fill-color=""
-                              data-highlight-line-color="#fff" data-spot-radius="3" data-values="1,3,4,7,5,9,4,4,7,5,9,6,4" data-resize="true" class="pv-lg"></div>
-                              <p>
-                                 <small class="text-muted">Actual progress</small>
-                              </p>
-                              <div class="progress progress-xs">
-                                 <div role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%" class="progress-bar progress-bar-info progress-bar-striped">
-                                    <span class="sr-only">80% Complete</span>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                        <!-- END widget-->
-                     </div>
-                      
-                      
-                     <div class="col-lg-4">
-                  <div class="panel panel-default">
-                     <div class="panel-heading">
-                        <div class="panel-title">Latest activities</div>
-                     </div>
-                     <!-- START list group-->
-                     <div class="list-group">
-                        <!-- START list group item-->
-                        <div class="list-group-item">
-                           <div class="media-box">
-                              <div class="pull-left">
-                                 <span class="fa-stack">
-                                    <em class="fa fa-circle fa-stack-2x text-purple"></em>
-                                    <em class="fa fa-cloud-upload fa-stack-1x fa-inverse text-white"></em>
-                                 </span>
-                              </div>
-                              <div class="media-box-body clearfix">
-                                 <small class="text-muted pull-right ml">15m</small>
-                                 <div class="media-box-heading"><a href="#" class="text-purple m0">NEW FILE</a>
-                                 </div>
-                                 <p class="m0">
-                                    <small><a href="#">Bootstrap.xls</a>
-                                    </small>
-                                 </p>
-                              </div>
-                           </div>
-                        </div>
-                        <!-- END list group item-->
-                        <!-- START list group item-->
-                        <div class="list-group-item">
-                           <div class="media-box">
-                              <div class="pull-left">
-                                 <span class="fa-stack">
-                                    <em class="fa fa-circle fa-stack-2x text-info"></em>
-                                    <em class="fa fa-file-text-o fa-stack-1x fa-inverse text-white"></em>
-                                 </span>
-                              </div>
-                              <div class="media-box-body clearfix">
-                                 <small class="text-muted pull-right ml">2h</small>
-                                 <div class="media-box-heading"><a href="#" class="text-info m0">NEW DOCUMENT</a>
-                                 </div>
-                                 <p class="m0">
-                                    <small><a href="#">Bootstrap.doc</a>
-                                    </small>
-                                 </p>
-                              </div>
-                           </div>
-                        </div>
-                        <!-- END list group item-->
-                        <!-- START list group item-->
-                        <div class="list-group-item">
-                           <div class="media-box">
-                              <div class="pull-left">
-                                 <span class="fa-stack">
-                                    <em class="fa fa-circle fa-stack-2x text-danger"></em>
-                                    <em class="fa fa-exclamation fa-stack-1x fa-inverse text-white"></em>
-                                 </span>
-                              </div>
-                              <div class="media-box-body clearfix">
-                                 <small class="text-muted pull-right ml">5h</small>
-                                 <div class="media-box-heading"><a href="#" class="text-danger m0">BROADCAST</a>
-                                 </div>
-                                 <p class="m0"><a href="#">Read</a>
-                                 </p>
-                              </div>
-                           </div>
-                        </div>
-                        <!-- END list group item-->
-                        <!-- START list group item-->
-                        <div class="list-group-item">
-                           <div class="media-box">
-                              <div class="pull-left">
-                                 <span class="fa-stack">
-                                    <em class="fa fa-circle fa-stack-2x text-success"></em>
-                                    <em class="fa fa-clock-o fa-stack-1x fa-inverse text-white"></em>
-                                 </span>
-                              </div>
-                              <div class="media-box-body clearfix">
-                                 <small class="text-muted pull-right ml">15h</small>
-                                 <div class="media-box-heading"><a href="#" class="text-success m0">NEW MEETING</a>
-                                 </div>
-                                 <p class="m0">
-                                    <small>On
-                                       <em>10/12/2015 09:00 am</em>
-                                    </small>
-                                 </p>
-                              </div>
-                           </div>
-                        </div>
-                        <!-- END list group item-->
-                        <!-- START list group item-->
-                        <div class="list-group-item">
-                           <div class="media-box">
-                              <div class="pull-left">
-                                 <span class="fa-stack">
-                                    <em class="fa fa-circle fa-stack-2x text-warning"></em>
-                                    <em class="fa fa-tasks fa-stack-1x fa-inverse text-white"></em>
-                                 </span>
-                              </div>
-                              <div class="media-box-body clearfix">
-                                 <small class="text-muted pull-right ml">1w</small>
-                                 <div class="media-box-heading"><a href="#" class="text-warning m0">TASKS COMPLETION</a>
-                                 </div>
-                                 <div class="progress progress-xs m0">
-                                    <div role="progressbar" aria-valuenow="22" aria-valuemin="0" aria-valuemax="100" style="width: 22%" class="progress-bar progress-bar-warning progress-bar-striped">
-                                       <span class="sr-only">22% Complete</span>
-                                    </div>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                        <!-- END list group item-->
-                     </div>
-                     <!-- END list group-->
-                     <!-- START panel footer-->
-                     <div class="panel-footer clearfix">
-                        <a href="#" class="pull-left">
-                           <small>Load more</small>
-                        </a>
-                     </div>
-                     <!-- END panel-footer-->
-                  </div>                      
-                      </div>
-                   </div>
+  <div class="jumbotron text-center">
+    <div class="text-center">
+      <img alt="Market" class="img-responsive center-block" src="modules/core/img/brand/logo-market.png" />
+    </div>
+    <br>
+    <div class="row">
+      <p class="lead">
+        Web Hub for the Energy Market Data
+      </p>
+    </div>
+    <div class="row">
+        <p>
+            <a class="btn btn-primary btn-lg" href="http://www.atkloud.com" target="_blank">Learn more</a>
+        </p>
+        <p>The Energy Market Data Web allows users to download data from the FTP sources, query and analyze this information online.</p>
+        <p>Click <em>Signup</em> or <em>Signin</em> with your existing account to get started.</p>
+    </div>
+  </div>
 </section>
