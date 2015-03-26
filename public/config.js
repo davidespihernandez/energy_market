@@ -20,7 +20,9 @@ var ApplicationConfiguration = (function() {
                                                'ui.utils', 
                                                'chart.js',
                                                'ngCsv',
-                                               'ui.select'];
+                                               'ui.select',
+                                               'ui.grid',
+                                               'ui.grid.pagination'];
     
 	// Add a new vertical module
 	var registerModule = function(moduleName, dependencies) {

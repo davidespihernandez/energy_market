@@ -14,12 +14,11 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$timeout
         $scope.dateFromInput = "";
         $scope.dateToInput = "";
         $scope.dataList = [];
-        $scope.pageDataList = [];
         $scope.graphSelectedSeries = "ALL";
         $scope.locations = [];
         $scope.averageLMP = 0; $scope.averageMLC = 0; $scope.averageMCC = 0; $scope.averageMEC = 0; 
         $scope.labels = [" ", " "];
-        $scope.showAveragesOnGraph;
+        $scope.showAveragesOnGraph = false;
 
         $scope.series = ["LMP", "MLC", "MCC", "MEC"];
         $scope.graphData = [
@@ -35,9 +34,23 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$timeout
         $scope.currentPage = 1;
         $scope.itemsPerPage = 24;
         $scope.totalItems = 0;
-
-        $scope.labelsFilter = function (label,index){return false;};
-
+        
+        
+        //Grid
+  $scope.gridOptions = {
+    paginationPageSizes: [24, 48, 72],
+    paginationPageSize: 24,
+    enableSorting: true,
+    columnDefs: [
+      { field: 'Interval', name: 'Date' },
+      { field: 'Settlement_Location', name: 'Location' },
+      { field: 'LMP', name: 'LMP'},
+      { field: 'MLC', name: 'MLC'},
+      { field: 'MCC', name: 'MCC'},
+      { field: 'MEC', name: 'MEC'}
+    ]
+  };
+        
         $scope.onClick = function (points, evt) {
             console.log(points, evt);
         };
@@ -166,8 +179,7 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$timeout
             $scope.dataList = AnalysisData.query({market: $scope.comboboxes.selectedMarket.value, locations: $scope.comboboxes.selectedLocations, dateFrom: $scope.dateFromInput, dateTo: $scope.dateToInput}, function(){
                 $scope.panelClass = "panel-body";
                 $scope.totalItems = $scope.dataList.length;
-                var indexFrom = ($scope.currentPage-1)*$scope.itemsPerPage;
-                $scope.pageDataList = $scope.dataList.slice(indexFrom, indexFrom + $scope.itemsPerPage);
+                 $scope.gridOptions.data = $scope.dataList;
                 //fill the graph data
                 $scope.fillGraphDataNew();
             });
@@ -196,13 +208,6 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$timeout
                 finalData.push( [$scope.toUTCDateString(item.Interval), item.Settlement_Location, item.Pnode, item.LMP, item.MLC, item.MCC, item.MEC] );
             });
             return(finalData);
-        };
-
-        $scope.pageChanged = function(){
-            console.log('Page changed to ' + $scope.currentPage);
-            var indexFrom = ($scope.currentPage-1)*$scope.itemsPerPage;
-            $scope.pageDataList = $scope.dataList.slice(indexFrom, indexFrom + $scope.itemsPerPage);
-
         };
 
 //        $scope.$on('create', function (event, chart) {

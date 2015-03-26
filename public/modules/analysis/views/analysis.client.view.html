@@ -1,15 +1,15 @@
 <h3>Data Analysis</h3>
 <section data-ng-controller="AnalysisController" data-ng-init="initPage()">
     <div class="row">
-        <div class="col-lg-12">
+        <div class="col-lg-4">
             <div class="panel panel-default">
                 <!-- Default panel contents -->
                 <div class="panel-heading">Data Review: Period and Location</div>
                 <div class="panel-body">
-                    <form class="form-inline">
+                    <form role="form">
                       <div class="form-group">
-                        <label for="comboboxes.selectedMarket">Market </label><br />
-                        <ui-select ng-model="comboboxes.selectedMarket" theme="bootstrap" ng-disabled="disabled" class="text-left" style="width: 120px;">
+                        <label>Market </label>
+                        <ui-select ng-model="comboboxes.selectedMarket" theme="bootstrap" ng-disabled="disabled" class="text-left">
                            <ui-select-match placeholder="Market...">{{$select.selected.label}}</ui-select-match>
                            <ui-select-choices repeat="market in availableMarkets | filter: $select.search">
                               <span ng-bind-html="market.label | highlight: $select.search"></span>
@@ -18,8 +18,8 @@
                         </ui-select>
                       </div>
                       <div class="form-group">
-                        <label for="dateFromInput">Start date </label><br />
-                        <div class="input-group" style="width: 200px;">
+                        <label>Start date </label>
+                        <div class="input-group">
                             <input type="text" class="form-control" datepicker-popup="dd-MMMM-yyyy" ng-model="dateFromInput" is-open="openedFrom" ng-required="false" close-text="Close" />
                             <span class="input-group-btn">
                                 <button type="button" class="btn btn-default" ng-click="openFrom($event)"><em class="icon-calendar"></em></button>
@@ -27,8 +27,8 @@
                         </div>
                       </div>
                       <div class="form-group">
-                        <label for="dateToInput">End date </label><br />
-                        <div class="input-group" style="width: 200px;">
+                        <label>End date </label>
+                        <div class="input-group">
                             <input type="text" class="form-control" datepicker-popup="dd-MMMM-yyyy" ng-model="dateToInput" is-open="openedTo" ng-required="false" close-text="Close" />
                             <span class="input-group-btn">
                                 <button type="button" class="btn btn-default" ng-click="openTo($event)"><em class="icon-calendar"></em></button>
@@ -36,101 +36,76 @@
                         </div>
                       </div>
                      <div class="form-group">
-                        <label for="comboboxes.selectedLocations">Locations </label><br />
-                        <ui-select multiple="" ng-model="comboboxes.selectedLocations" theme="bootstrap" ng-disabled="disabled" style="width: 400px;">
+                        <label>Locations </label>
+                        <ui-select multiple="" ng-model="comboboxes.selectedLocations" theme="bootstrap" ng-disabled="disabled">
                            <ui-select-match placeholder="Select locations...">{{$item.label}}</ui-select-match>
                            <ui-select-choices repeat="location in locations | filter:$select.search">
                                <div ng-bind-html="location.value | highlight: $select.search"></div>
                            </ui-select-choices>
                         </ui-select>
                      </div>
-                     <div class="form-group pull-right">
-                        <label> </label><br />
-                        <button class="btn btn-success" ng-click="search()"><em class="icon-magnifier"></em> Search</button>
-                    </form>
+                     <button class="btn btn-success" ng-click="search()"><em class="icon-magnifier"></em> Search</button>
                 </div>
             </div>
         </div>
-    </div>
-
-    <div class="row">
-        <div class="col-lg-5">
-            <div class="panel panel-default">
-              <!-- Default panel contents -->
-              <div class="panel-heading"> 
-                  Data 
-                  <span class="pull-right">
-                      <button class="btn btn-primary btn-sm" type="button" ng-csv="exportData()" filename="market_export.csv"> <em class="fa fa-download"></em> Excel ({{totalItems}} rows) </button>
-                  </span>
-              </div>
-              <div class="{{panelClass}}">
-                  <div class="table-responsive">
-                      <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Location</th>
-                                <th>LMP <br />($/MWH)</th>
-                                <th>MLC <br />($/MWH)</th>
-                                <th>MCC <br />($/MWH)</th>
-                                <th>MEC <br />($/MWH)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="data in pageDataList">                                
-                                <td>{{toUTCDate(data.Interval) | date:'MM-dd-yyyy HH:mm'}}</td>
-                                <td>{{data.Settlement_Location}}</td>
-                                <td>{{data.LMP}}</td>
-                                <td>{{data.MLC}}</td>
-                                <td>{{data.MCC}}</td>
-                                <td>{{data.MEC}}</td>
-                            </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                    <pagination total-items="totalItems" ng-model="currentPage" items-per-page="itemsPerPage" class="pagination-sm" boundary-links="true" rotate="false" ng-change="pageChanged()"></pagination>
-              </div>
-            </div>
-        </div>
-        <div class="col-lg-7">
+        
+        <div class="col-lg-8">
             <div class="panel panel-default">
                 <!-- Default panel contents -->
                 <div class="panel-heading">
                     Data Review: Visual Reference
                 </div>
                 <div class="panel-body">
-                    <span class="pull-left">
-                        <ul class="list-inline" ng-show="showAveragesOnGraph">
-                            <li><b>Averages</b></li>
-                            <li>LMP <span class="label label-info">{{averageLMP}}</span></li>
-                            <li>MLC <span class="label label-info">{{averageMLC}}</span></li>
-                            <li>MCC <span class="label label-info">{{averageMCC}}</span></li>
-                            <li>MEC <span class="label label-info">{{averageMEC}}</span></li>
-                        </ul>
-                    </span>
-                    <span class="pull-right">
-                        <div class="btn-group" dropdown>
-                          <button type="button" class="btn btn-info dropdown-toggle" dropdown-toggle>
-                            {{graphSelectedSeries}} <span class="caret"></span>
-                          </button>
-                          <ul class="dropdown-menu" role="menu">
-                            <li><a ng-click="filterSeries('ALL')">ALL</a></li>
-                            <li class="divider"></li>
-                            <li><a ng-click="filterSeries('LMP')">LMP</a></li>
-                            <li><a ng-click="filterSeries('MLC')">MLC</a></li>
-                            <li><a ng-click="filterSeries('MCC')">MCC</a></li>
-                            <li><a ng-click="filterSeries('MEC')">MEC</a></li>
-                          </ul>
-                        </div>
-                    </span>
+                                <span class="pull-left">
+                                    <ul class="list-inline" ng-show="showAveragesOnGraph">
+                                        <li><b>Averages</b></li>
+                                        <li>LMP <span class="label label-info">{{averageLMP}}</span></li>
+                                        <li>MLC <span class="label label-info">{{averageMLC}}</span></li>
+                                        <li>MCC <span class="label label-info">{{averageMCC}}</span></li>
+                                        <li>MEC <span class="label label-info">{{averageMEC}}</span></li>
+                                    </ul>
+                                </span>
+                                <span class="pull-right">
+                                    <div class="btn-group" dropdown>
+                                      <button type="button" class="btn btn-info dropdown-toggle" dropdown-toggle>
+                                        {{graphSelectedSeries}} <span class="caret"></span>
+                                      </button>
+                                      <ul class="dropdown-menu" role="menu">
+                                        <li><a ng-click="filterSeries('ALL')">ALL</a></li>
+                                        <li class="divider"></li>
+                                        <li><a ng-click="filterSeries('LMP')">LMP</a></li>
+                                        <li><a ng-click="filterSeries('MLC')">MLC</a></li>
+                                        <li><a ng-click="filterSeries('MCC')">MCC</a></li>
+                                        <li><a ng-click="filterSeries('MEC')">MEC</a></li>
+                                      </ul>
+                                    </div>
+                                </span>
 
-                    <canvas id="line" class="chart chart-line" data="graphData" options="graphOptions" 
-                      labels="labels" legend="true" series="series" height="300px" labelsFilter="labelsFilter" 
-                      click="onClick">
-                    </canvas> 
+                                <canvas id="line" class="chart chart-line" data="graphData" options="graphOptions" 
+                                  labels="labels" legend="true" series="series" height="300px" 
+                                  click="onClick">
+                                </canvas> 
                 </div>
             </div>
         </div>
-    </div>     
+    </div>    
+        
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+              <div class="panel-heading"> 
+                  Data 
+                  <span class="pull-right">
+                      <button class="btn btn-primary btn-sm" type="button" ng-csv="exportData()" filename="market_export.csv"> <em class="fa fa-download"></em> Excel ({{totalItems}} rows) </button>
+                  </span>
+              </div>
+                <div class="panel-body">
+               <div class="table-responsive">
+                  <div ui-grid="gridOptions" ui-grid-pagination class="grid" style="height: 500px;"></div>
+               </div>
+                </div>
+            </div>            
+        </div>
+    </div>
 </section>
 

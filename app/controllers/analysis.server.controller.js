@@ -63,9 +63,7 @@ exports.search = function(req, res) {
         else{
             var locationJSON = JSON.parse(parameters.locations);
             locationsArray.push(locationJSON.value);
-            console.log(locationJSON);
         }
-        console.log(locationsArray);
         //query = query.where('Settlement_Location').equals(parameters.location);
         query = query.where('Settlement_Location').in(locationsArray);
     }
