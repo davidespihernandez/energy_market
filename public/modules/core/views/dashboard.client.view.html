@@ -3,17 +3,18 @@
 </h3>
 <section data-ng-controller="DashboardController" data-ng-init="initPage()">
     <div class="row">
-       <div class="col-lg-6 col-md-6">
+       <div class="col-lg-3 col-md-6">
           <!-- START panel-->
           <div class="panel panel-primary">
              <div class="panel-heading">
                 <div class="row">
                    <div class="col-xs-3">
-                      <em class="fa fa-excel-file-o fa-5x"></em>
+                      <em class="fa fa-file-excel-o fa-5x"></em>
                    </div>
                    <div class="col-xs-9 text-right">
                       <div class="text-lg">{{dashboardData.files}}</div>
-                      <p class="m0">Files stored
+                      <p class="m0">Files loaded</p>
+                   </div>
                 </div>
              </div>
              <a href="#" class="panel-footer bg-gray-dark bt0 clearfix btn-block">
@@ -22,12 +23,13 @@
                    <em class="fa fa-chevron-circle-right"></em>
                 </span>
              </a>
-             <!-- END panel-->
           </div>
+          <!-- END panel-->
        </div>
-       <div class="col-lg-6 col-md-6">
+        
+       <div class="col-lg-3 col-md-6">
           <!-- START panel-->
-          <div class="panel panel-green">
+          <div class="panel panel-info">
              <div class="panel-heading">
                 <div class="row">
                    <div class="col-xs-3">
@@ -48,9 +50,7 @@
           </div>
           <!-- END panel-->
        </div>
-    </div>
-    <div class="row">
-       <div class="col-lg-6 col-md-6">
+       <div class="col-lg-3 col-md-6">
           <!-- START panel-->
           <div class="panel panel-warning">
              <div class="panel-heading">
@@ -73,7 +73,7 @@
           </div>
           <!-- END panel-->
        </div>
-       <div class="col-lg-6 col-md-6">
+       <div class="col-lg-3 col-md-6">
           <!-- START panel-->
           <div class="panel panel-danger">
              <div class="panel-heading">

@@ -19,7 +19,8 @@ var ApplicationConfiguration = (function() {
                                                'ngResource', 
                                                'ui.utils', 
                                                'chart.js',
-                                               'ngCsv'];
+                                               'ngCsv',
+                                               'ui.select'];
     
 	// Add a new vertical module
 	var registerModule = function(moduleName, dependencies) {

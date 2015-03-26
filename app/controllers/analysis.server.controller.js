@@ -15,15 +15,20 @@ var mongoose = require('mongoose'),
  */
 
 exports.distinctLocations = function (req, res){
-    console.log('Distinct locations for ' + req.query.market);
+    console.log('Distinct locations for %j', req.query);
     var market = req.query.market;
     var model = DayAheadData;
     if("RTBM"===market){
+        console.log('Querying locations for real time');
         model = RealTimeData;
     }
     model.distinct('Settlement_Location', function(err, locations){
         console.log("Retrieved locations: " + locations.length);
-        res.json(locations);
+        var endLocations = [];
+        locations.forEach(function(location){
+            endLocations.push({value: location, label: location});
+        });
+        res.json(endLocations);
     });        
 };
 
@@ -34,7 +39,7 @@ exports.distinctLocations = function (req, res){
 exports.search = function(req, res) {
     var parameters = req.query;
     var market = req.query.market;
-    console.log('Searching data for ' + req.query.market);
+    console.log('Searching data for %j', parameters);
     var query = DayAheadData.find();
     if("RTBM"===market){
         query = RealTimeData.find();
@@ -47,9 +52,25 @@ exports.search = function(req, res) {
         console.log('Date to ' + parameters.dateTo);
         query = query.where('date').lte(parameters.dateTo);
     }
-    if(parameters.location && parameters.location != "undefined" && parameters.location != "null"){
-        console.log('Location ' + parameters.location);
-        query = query.where('Settlement_Location').equals(parameters.location);
+    if(parameters.locations && parameters.locations != "undefined" && parameters.locations != "null"){
+        console.log('Locations ');
+        console.log(parameters.locations);
+        var locationsArray = [];
+        if(Array.isArray(parameters.locations)){
+            parameters.locations.forEach(function(locationObj){
+                var locationJSON = JSON.parse(locationObj);
+                locationsArray.push(locationJSON.value);
+            });
+        }
+        else{
+            var locationJSON = JSON.parse(parameters.locations);
+            locationsArray.push(locationJSON.value);
+            console.log('Not array');
+            console.log(locationJSON);
+        }
+        console.log(locationsArray);
+        //query = query.where('Settlement_Location').equals(parameters.location);
+        query = query.where('Settlement_Location').in(locationsArray);
     }
 
     query.sort({ Interval: 'asc' }).exec(function (err, data) {
@@ -60,6 +81,13 @@ exports.search = function(req, res) {
 };                                    
 
 exports.dashboard = function(req, res) {
-    console.log('Loading dashboard for user ' + req.user.toString());
+    console.log('Loading dashboard for user %j', req.user);
+    var dashboardData = {
+            files: 6,
+            markets: 2,
+            locations: 245,
+            rows: 214325
+        };
+    res.json(dashboardData);
 };
 

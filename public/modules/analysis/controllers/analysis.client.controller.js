@@ -3,6 +3,9 @@
 angular.module('analysis').controller('AnalysisController', ['$scope', '$timeout', '$stateParams', '$location', 'Authentication', 'AnalysisData', 'Locations',
 	function($scope, $timeout, $stateParams, $location, Authentication, AnalysisData, Locations) {
         
+        
+  $scope.comboboxes = {};
+  $scope.comboboxes.selectedLocations = [];
         //table
       // Define global instance we'll use to destroy later
 /*
@@ -39,16 +42,14 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$timeout
         $('[class*=ColVis]').remove();
       });
 */
-        
 		$scope.authentication = Authentication;
-        $scope.market = $stateParams.market;
-        console.log('Analysis controller for market ' + $scope.market);
+        console.log('Analysis controller');
         $scope.panelClass = "panel-body";
 
         console.log("AnalysisController!");
+        $scope.marketInput = "DA";
         $scope.dateFromInput = "";
         $scope.dateToInput = "";
-        $scope.locationInput = "";
         $scope.dataList = [];
         $scope.pageDataList = [];
         $scope.graphSelectedSeries = "ALL";
@@ -144,7 +145,7 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$timeout
         $scope.search = function(){
             console.log("Searching ");
             $scope.panelClass = "panel-body whirl standard";
-            $scope.dataList = AnalysisData.query({market: $scope.marketInput, location: $scope.locationInput, dateFrom: $scope.dateFromInput, dateTo: $scope.dateToInput}, function(){
+            $scope.dataList = AnalysisData.query({market: $scope.marketInput, locations: $scope.comboboxes.selectedLocations, dateFrom: $scope.dateFromInput, dateTo: $scope.dateToInput}, function(){
                 $scope.panelClass = "panel-body";
                 $scope.totalItems = $scope.dataList.length;
                 var indexFrom = ($scope.currentPage-1)*$scope.itemsPerPage;
@@ -161,10 +162,10 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$timeout
 
         $scope.fillLocations = function(callback){
             console.log("searching locations for " + $scope.marketInput);
-            $scope.locations = Locations.query({market: $scope.marketInput }, function(){
+            $scope.locations = Locations.query( { market: $scope.marketInput }, function(){
                 if($scope.locations.length>0){
-                    $scope.locationInput = $scope.locations[0].toString();
-                    console.log('First location ' + $scope.locationInput);
+                    $scope.comboboxes.selectedLocations.push($scope.locations[0]);
+                    console.log('First location %j', $scope.locations[0]);
                 }
                 callback();                
             });

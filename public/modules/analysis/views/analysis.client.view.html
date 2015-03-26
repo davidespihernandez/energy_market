@@ -8,15 +8,15 @@
                 <div class="panel-body">
                     <form class="form-inline">
                       <div class="form-group">
-                        <label for="marketInput">Market</label>
-                        <select chosen="" ng-model="marketInput" ng-init="marketInput = 'DA'" class="chosen-select input-md">
+                        <label for="marketInput">Market: </label>
+                        <select chosen="" ng-model="marketInput" ng-init="marketInput = 'DA'" class="chosen-select input-md form-control" style="width: 120px;">
                              <option value="DA">Day Ahead</option>
                              <option value="RTBM">Real Time</option>
                         </select>
                       </div>
                       <div class="form-group">
-                        <label for="dateFromInput">From</label>
-                        <div class="input-group">
+                        <label for="dateFromInput">Start date: </label>
+                        <div class="input-group" style="width: 200px;">
                             <input type="text" class="form-control" datepicker-popup="dd-MMMM-yyyy" ng-model="dateFromInput" is-open="openedFrom" ng-required="false" close-text="Close" />
                             <span class="input-group-btn">
                                 <button type="button" class="btn btn-default" ng-click="openFrom($event)"><em class="icon-calendar"></em></button>
@@ -24,23 +24,24 @@
                         </div>
                       </div>
                       <div class="form-group">
-                        <label for="dateToInput">To</label>
-                        <div class="input-group">
+                        <label for="dateToInput">End date: </label>
+                        <div class="input-group" style="width: 200px;">
                             <input type="text" class="form-control" datepicker-popup="dd-MMMM-yyyy" ng-model="dateToInput" is-open="openedTo" ng-required="false" close-text="Close" />
                             <span class="input-group-btn">
                                 <button type="button" class="btn btn-default" ng-click="openTo($event)"><em class="icon-calendar"></em></button>
                             </span>
                         </div>
                       </div>
-                      <div class="form-group">
-                        <label for="locationInput">Location</label>
-                        <select class="form-control" ng-init="locationInput = locations[0]" ng-model="locationInput" ng-options="location for location in locations"></select>
-                      </div>
-                      <div class="form-group">
-                        <label for="locationMultipleInput">Location 2</label>
-                        <select chosen="" multiple="multiple" class="chosen-select form-control" ng-init="locationMultipleInput = locations[0]" ng-model="locationMultipleInput" ng-options="location for location in locations"></select>
-                      </div>
-                      <button class="btn btn-default" ng-click="search()"><em class="icon-magnifier"></em> Search</button>
+                     <div class="form-group">
+                        <label for="comboboxes.selectedLocations">Locations: </label>
+                        <ui-select multiple="" ng-model="comboboxes.selectedLocations" theme="bootstrap" ng-disabled="disabled" style="width: 400px;">
+                           <ui-select-match placeholder="Select locations...">{{$item.label}}</ui-select-match>
+                           <ui-select-choices repeat="location in locations | filter:$select.search">
+                               <div ng-bind-html="location.value | highlight: $select.search"></div>
+                           </ui-select-choices>
+                        </ui-select>
+                     </div>
+                      <button class="btn btn-success" ng-click="search()"><em class="icon-magnifier"></em> Search</button>
                     </form>
                 </div>
             </div>
