@@ -1,102 +1,107 @@
 <h3>FTP file management</h3>
 <section data-ng-controller="FilemanagerController" data-ng-init="initPage()">
-        <div class="row">
-            <div class="col-lg-5">
-                <div class="panel panel-default">
-                    <div class="panel-heading">Available market data</div>
-                    <div class="{{filesPanelClass}}">
-                        <div class="table-responsive">
-                            <ul class="list-inline">
-                                <li><i class="fa fa-folder-open-o"></i></li>
-                                <li ng-repeat="data in currentDirectoryComponents">
-                                    <a ng-click="setDir(data.subDirFullString)">{{data.subDirString}}</a> / 
-                                </li>
-                            </ul>
+    <div class="row">
+        <div class="col-lg-5">
+            <div class="panel panel-default">
+                <div class="panel-heading">Available market data</div>
+                <div ng-class="filesPanelClass">
+                    <div class="table-responsive">
+                        <ul class="list-inline">
+                            <li><i class="fa fa-folder-open-o"></i></li>
+                            <li ng-repeat="data in currentDirectoryComponents">
+                                <a ng-click="setDir(data.subDirFullString)">{{data.subDirString}}</a> / 
+                            </li>
+                        </ul>
 
-                            <table class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Size</th>
-                                        <th width="40px"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr ng-repeat="file in fileList">
-                                        <td ng-if="file.type === 'd'">
-                                            <a ng-click="listDir(file.name)">{{file.name}}</a>
-                                        </td>
-                                        <td ng-if="file.type != 'd'">
-                                            {{file.name}}
-                                        </td>
-                                        <td>{{file.size/1000000 | number : 2}} (MB)</td>
-                                        <td ng-if="file.type === 'd'">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Size</th>
+                                    <th width="40px"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="file in fileList">
+                                    <td ng-if="file.type === 'd'">
+                                        <a ng-click="listDir(file.name)">{{file.name}}</a>
+                                    </td>
+                                    <td ng-if="file.type != 'd'">
+                                        {{file.name}}
+                                    </td>
+                                    <td>{{file.size/1000000 | number : 2}} (MB)</td>
+                                    <td ng-if="file.type === 'd'">
 
-                                        </td>
-                                        <td ng-if="file.type != 'd'">
-                                            <button class="btn btn-default btn-xs" ng-click="loadFile(file.name)"><em class="icon-cloud-download"></em></button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                          </table>
-                        </div>
+                                    </td>
+                                    <td ng-if="file.type != 'd'">
+                                        <button class="btn btn-default btn-xs" ng-click="loadFile(file.name)"><em class="icon-cloud-download"></em></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                      </table>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-7">
-                <div class="panel panel-default">
-                  <!-- Default panel contents -->
-                  <div class="panel-heading">Loaded files </div>
-                  <div class="panel-body">
-                  <div class="table-responsive">
-                    <form class="form-inline">
-                      <div class="form-group">
-                        <label for="dateFromInput">Start date</label>
-                        <div class="input-group">
-                            <input type="text" class="form-control" datepicker-popup="dd-MMMM-yyyy" ng-model="dateFromInput" is-open="openedFrom" ng-required="false" close-text="Close" />
-                            <span class="input-group-btn">
-                                <button type="button" class="btn btn-default" ng-click="openFrom($event)"><em class="icon-calendar"></em></button>
-                            </span>
-                        </div>
-                      </div>
-                      <div class="form-group">
-                        <label for="dateToInput">End date</label>
-                        <div class="input-group">
-                            <input type="text" class="form-control" datepicker-popup="dd-MMMM-yyyy" ng-model="dateToInput" is-open="openedTo" ng-required="false" close-text="Close" />
-                            <span class="input-group-btn">
-                                <button type="button" class="btn btn-default" ng-click="openTo($event)"><em class="icon-calendar"></em></button>
-                            </span>
-                        </div>
-                      </div>
-                      <button class="btn btn-default" ng-click="listLoadedFiles()"><em class="icon-magnifier"></em> Filter</button>
-                    </form>
-                  <table id="loadedFilesTable" class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Market</th>
-                            <th>Type</th>
-                            <th>Year</th>
-                            <th>Month</th>
-                            <th>Date</th>
-                            <th><i ng-show="showFileDownloading" class="fa fa-refresh fa-spin text-right"></i></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr ng-repeat="file in pagedFileLoadedList">
-                            <td>{{file.market}}</td>
-                            <td>{{file.marketType}}</td>
-                            <td>{{file.year}}</td>
-                            <td>{{file.month}}</td>
-                            <td>{{file.date | date:'MM-dd-yyyy'}}</td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                  </table>
-                  <pagination total-items="totalItems" ng-model="currentPage" items-per-page="itemsPerPage" direction-links="false" boundary-links="true" ng-change="pageChanged()"></pagination>
+        </div>
+        <div class="col-lg-7">
+            <div class="panel panel-default">
+              <!-- Default panel contents -->
+              <div class="panel-heading">Loaded files </div>
+              <div class="panel-body">
+                <form class="form-inline">
+                  <div class="form-group">
+                    <label for="dateFromInput">Start date</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" datepicker-popup="dd-MMMM-yyyy" ng-model="dateFromInput" is-open="openedFrom" ng-required="false" close-text="Close" />
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="openFrom($event)"><em class="icon-calendar"></em></button>
+                        </span>
+                    </div>
                   </div>
+                  <div class="form-group">
+                    <label for="dateToInput">End date</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" datepicker-popup="dd-MMMM-yyyy" ng-model="dateToInput" is-open="openedTo" ng-required="false" close-text="Close" />
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="openTo($event)"><em class="icon-calendar"></em></button>
+                        </span>
+                    </div>
                   </div>
-                </div>
+                  <button class="btn btn-default" ng-click="listLoadedFiles()"><em class="icon-magnifier"></em> Filter</button>
+                </form>
+
+               <div class="table-responsive">
+                  <div ui-grid="gridOptions" ui-grid-pagination class="grid" style="height: 400px;"></div>
+               </div>
+
+              </div>
             </div>
-        </div>        
+        </div>
+    </div>        
+    <div class="row">
+        <table id="loadedFilesTable" class="table table-striped">
+        <thead>
+            <tr>
+                <th>Market</th>
+                <th>Type</th>
+                <th>Year</th>
+                <th>Month</th>
+                <th>Date</th>
+                <th><i ng-show="showFileDownloading" class="fa fa-refresh fa-spin text-right"></i></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="file in pagedFileLoadedList">
+                <td>{{file.market}}</td>
+                <td>{{file.marketType}}</td>
+                <td>{{file.year}}</td>
+                <td>{{file.month}}</td>
+                <td>{{file.date | date:'MM-dd-yyyy'}}</td>
+                <td></td>
+            </tr>
+        </tbody>
+        </table>
+        <pagination total-items="totalItems" ng-model="currentPage" items-per-page="itemsPerPage" direction-links="false" boundary-links="true" ng-change="pageChanged()"></pagination>
+    </div>
 </section>
 

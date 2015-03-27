@@ -55,7 +55,7 @@
                 <div class="panel-heading">
                     Data Review: Visual Reference
                 </div>
-                <div class="panel-body">
+                <div ng-class="panelClass">
                                 <span class="pull-left">
                                     <ul class="list-inline" ng-show="showAveragesOnGraph">
                                         <li><b>Averages</b></li>
@@ -99,7 +99,7 @@
                       <button class="btn btn-primary btn-sm" type="button" ng-csv="exportData()" filename="market_export.csv"> <em class="fa fa-download"></em> Excel ({{totalItems}} rows) </button>
                   </span>
               </div>
-                <div class="panel-body">
+                <div ng-class="panelClass">
                <div class="table-responsive">
                   <div ui-grid="gridOptions" ui-grid-pagination class="grid" style="height: 500px;"></div>
                </div>

@@ -17,6 +17,20 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
         $scope.fileList = [];
         $scope.fileLoadedList = [];
         $scope.pagedFileLoadedList = [];
+        
+        //Grid
+        $scope.gridOptions = {
+            paginationPageSizes: [15, 30, 45],
+            paginationPageSize: 15,
+            enableSorting: true,
+            columnDefs: [
+                { field: 'market', name: 'Market' },
+                { field: 'marketType', name: 'Type' },
+                { field: 'year', name: 'Year'},
+                { field: 'month', name: 'Month'},
+                { field: 'date', name: 'Date'}
+            ]
+        };
 
         $scope.openFrom = function($event) {
             $event.preventDefault();
@@ -102,6 +116,7 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
                 console.log('Total files ' + $scope.totalItems);
                 var indexFrom = ($scope.currentPage-1)*$scope.itemsPerPage;
                 $scope.pagedFileLoadedList = $scope.fileLoadedList.slice(indexFrom, indexFrom + $scope.itemsPerPage);
+                $scope.gridOptions.data = $scope.fileLoadedList;
             });
         };
 

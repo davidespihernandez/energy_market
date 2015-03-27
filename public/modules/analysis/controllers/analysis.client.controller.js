@@ -31,25 +31,23 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$timeout
                                 legend: false
                               };
 
-        $scope.currentPage = 1;
-        $scope.itemsPerPage = 24;
         $scope.totalItems = 0;
         
         
         //Grid
-  $scope.gridOptions = {
-    paginationPageSizes: [24, 48, 72],
-    paginationPageSize: 24,
-    enableSorting: true,
-    columnDefs: [
-      { field: 'Interval', name: 'Date' },
-      { field: 'Settlement_Location', name: 'Location' },
-      { field: 'LMP', name: 'LMP'},
-      { field: 'MLC', name: 'MLC'},
-      { field: 'MCC', name: 'MCC'},
-      { field: 'MEC', name: 'MEC'}
-    ]
-  };
+        $scope.gridOptions = {
+            paginationPageSizes: [24, 48, 72],
+            paginationPageSize: 24,
+            enableSorting: true,
+            columnDefs: [
+                { field: 'Interval', name: 'Date' },
+                { field: 'Settlement_Location', name: 'Location' },
+                { field: 'LMP', name: 'LMP', cellFilter: 'uppercase'},
+                { field: 'MLC', name: 'MLC', cellFilter: 'uppercase'},
+                { field: 'MCC', name: 'MCC', cellFilter: 'uppercase'},
+                { field: 'MEC', name: 'MEC', cellFilter: 'uppercase'}
+            ]
+        };
         
         $scope.onClick = function (points, evt) {
             console.log(points, evt);

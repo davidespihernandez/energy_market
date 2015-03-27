@@ -78,11 +78,28 @@ exports.search = function(req, res) {
 exports.dashboard = function(req, res) {
     console.log('Loading dashboard for user %j', req.user);
     var dashboardData = {
-            files: 6,
+            files: 0,
             markets: 2,
-            locations: 245,
-            rows: 214325
+            locations: 0,
+            rows: 0
         };
-    res.json(dashboardData);
+    //TODO: change that using Q.all
+    MarketFile.count({}, function(err, files){
+        dashboardData.files = files;
+        DayAheadData.count({}, function(err, dayAhead){
+            RealTimeData.count({}, function(err, realTime){
+                dashboardData.rows = dayAhead + realTime;
+                //now count distinct locations
+                var model = RealTimeData;
+                if(dayAhead>0){
+                    model = DayAheadData;
+                }
+                model.aggregate().group({ _id: null, count: { $sum: 1 } }).exec(function (err, totals) {
+                    dashboardData.locations = totals.count;
+                    res.json(dashboardData);
+                });
+            });
+        });
+    });
 };
 
