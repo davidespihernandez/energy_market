@@ -71,6 +71,7 @@ exports.search = function(req, res) {
     query.sort({ Interval: 'asc' }).exec(function (err, data) {
         if (err) return console.error(err);
         console.log("Return data -> " + data.length);
+        console.log(data);
         res.json(data);
     });
 };                                    
@@ -94,8 +95,8 @@ exports.dashboard = function(req, res) {
                 if(dayAhead>0){
                     model = DayAheadData;
                 }
-                model.aggregate().group({ _id: null, count: { $sum: 1 } }).exec(function (err, totals) {
-                    dashboardData.locations = totals.count;
+                model.distinct('Settlement_Location').exec(function (err, locations) {
+                    dashboardData.locations = locations.length;
                     res.json(dashboardData);
                 });
             });

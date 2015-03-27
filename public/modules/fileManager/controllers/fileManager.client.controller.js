@@ -24,11 +24,9 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
             paginationPageSize: 15,
             enableSorting: true,
             columnDefs: [
-                { field: 'market', name: 'Market' },
-                { field: 'marketType', name: 'Type' },
-                { field: 'year', name: 'Year'},
-                { field: 'month', name: 'Month'},
-                { field: 'date', name: 'Date'}
+                { field: 'market', name: 'Market', width: '80' },
+                { field: 'filePath', name: 'Path' },
+                { field: 'date', name: 'Date', width: '120', cellFilter: "date:'MMMM dd, yyyy':'UTC'"}
             ]
         };
 
@@ -150,7 +148,7 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
             //call the function to show loaded files
             $scope.listLoadedFiles();
             //list current dir files
-            $scope.setDir('Markets/RTBM/LMP_By_SETTLEMENT_LOC/2015/03');
+            $scope.setDir('Markets/DA/LMP_By_SETTLEMENT_LOC/2015/03');
         };
         
 	}

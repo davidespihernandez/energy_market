@@ -45,63 +45,38 @@
         </div>
         <div class="col-lg-7">
             <div class="panel panel-default">
-              <!-- Default panel contents -->
-              <div class="panel-heading">Loaded files </div>
-              <div class="panel-body">
-                <form class="form-inline">
-                  <div class="form-group">
-                    <label for="dateFromInput">Start date</label>
-                    <div class="input-group">
-                        <input type="text" class="form-control" datepicker-popup="dd-MMMM-yyyy" ng-model="dateFromInput" is-open="openedFrom" ng-required="false" close-text="Close" />
-                        <span class="input-group-btn">
-                            <button type="button" class="btn btn-default" ng-click="openFrom($event)"><em class="icon-calendar"></em></button>
-                        </span>
+                <div class="panel-heading">Loaded files </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form class="form-inline">
+                              <div class="form-group">
+                                <div class="input-group">
+                                    <input type="text" placeholder="Start date" class="form-control" datepicker-popup="dd-MMMM-yyyy" ng-model="dateFromInput" is-open="openedFrom" ng-required="false" close-text="Close" />
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-default" ng-click="openFrom($event)"><em class="icon-calendar"></em></button>
+                                    </span>
+                                </div>
+                              </div>
+                              <div class="form-group">
+                                <div class="input-group">
+                                    <input type="text" placeholder="End date" class="form-control" datepicker-popup="dd-MMMM-yyyy" ng-model="dateToInput" is-open="openedTo" ng-required="false" close-text="Close" />
+                                    <span class="input-group-btn">
+                                        <button type="button" class="btn btn-default" ng-click="openTo($event)"><em class="icon-calendar"></em></button>
+                                    </span>
+                                </div>
+                              </div>
+                              <button class="btn btn-default pull-right" ng-click="listLoadedFiles()"><em class="icon-magnifier"></em> Filter</button>
+                            </form>
+                            <br />
+                        </div>
                     </div>
-                  </div>
-                  <div class="form-group">
-                    <label for="dateToInput">End date</label>
-                    <div class="input-group">
-                        <input type="text" class="form-control" datepicker-popup="dd-MMMM-yyyy" ng-model="dateToInput" is-open="openedTo" ng-required="false" close-text="Close" />
-                        <span class="input-group-btn">
-                            <button type="button" class="btn btn-default" ng-click="openTo($event)"><em class="icon-calendar"></em></button>
-                        </span>
+                    <div class="table-responsive">
+                        <div ui-grid="gridOptions" ui-grid-pagination class="grid" style="height: 500px;"></div>
                     </div>
-                  </div>
-                  <button class="btn btn-default" ng-click="listLoadedFiles()"><em class="icon-magnifier"></em> Filter</button>
-                </form>
-
-               <div class="table-responsive">
-                  <div ui-grid="gridOptions" ui-grid-pagination class="grid" style="height: 400px;"></div>
-               </div>
-
-              </div>
+                </div>
             </div>
         </div>
     </div>        
-    <div class="row">
-        <table id="loadedFilesTable" class="table table-striped">
-        <thead>
-            <tr>
-                <th>Market</th>
-                <th>Type</th>
-                <th>Year</th>
-                <th>Month</th>
-                <th>Date</th>
-                <th><i ng-show="showFileDownloading" class="fa fa-refresh fa-spin text-right"></i></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr ng-repeat="file in pagedFileLoadedList">
-                <td>{{file.market}}</td>
-                <td>{{file.marketType}}</td>
-                <td>{{file.year}}</td>
-                <td>{{file.month}}</td>
-                <td>{{file.date | date:'MM-dd-yyyy'}}</td>
-                <td></td>
-            </tr>
-        </tbody>
-        </table>
-        <pagination total-items="totalItems" ng-model="currentPage" items-per-page="itemsPerPage" direction-links="false" boundary-links="true" ng-change="pageChanged()"></pagination>
-    </div>
 </section>
 

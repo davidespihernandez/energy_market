@@ -54,12 +54,12 @@ function fileNameInfo (fileName){
     if("DA" === marketCode){
         name = components[5];
         date = name.substring(name.lastIndexOf('-')+1, name.lastIndexOf('.')).substring(0,8);
-        dateDate = Date.parse(date.substring(0,4) + "-" + date.substring(4,6) + "-" + date.substring(6,8));
+        dateDate = Date.UTC(date.substring(0,4), date.substring(4,6)-1, date.substring(6,8));
     }
     else if("RTBM" === marketCode){
         name = components[6];
         var day = components[5];
-        dateDate = Date.parse(year + "-" + month + "-" + day);
+        dateDate = Date.UTC(year, month-1, day);
     }
     return {
         market: marketCode,
@@ -131,8 +131,8 @@ exports.importFile = function(req, res) {
                     for (var i = 1, len = lines.length; i < len; i++) {
                         var fields = lines[i].split(',');
                         if(fields.length>1){
-                            var dateFrom = fields[0].substring(6,10) + "-" + fields[0].substring(0,2) + "-" + fields[0].substring(3,5) + "T" + fields[0].substring(11);
-                            var dateTo = fields[1].substring(6,10) + "-" + fields[1].substring(0,2) + "-" + fields[1].substring(3,5) + "T" + fields[1].substring(11);
+                            var dateFrom = fields[0].substring(6,10) + "-" + fields[0].substring(0,2) + "-" + fields[0].substring(3,5) + "T" + fields[0].substring(11) + "Z";
+                            var dateTo = fields[1].substring(6,10) + "-" + fields[1].substring(0,2) + "-" + fields[1].substring(3,5) + "T" + fields[1].substring(11) + "Z";
                             var measureType = DayAheadData;
                             if("RTBM" === marketFileDoc.market){
                                 measureType = RealTimeData;

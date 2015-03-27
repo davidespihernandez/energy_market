@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('analysis').controller('AnalysisController', ['$scope', '$timeout', '$stateParams', '$location', 'Authentication', 'AnalysisData', 'Locations',
-	function($scope, $timeout, $stateParams, $location, Authentication, AnalysisData, Locations) {
+angular.module('analysis').controller('AnalysisController', ['$scope', '$filter', '$timeout', '$stateParams', '$location', 'Authentication', 'AnalysisData', 'Locations',
+	function($scope, $filter, $timeout, $stateParams, $location, Authentication, AnalysisData, Locations) {
         
 		$scope.authentication = Authentication;
         $scope.availableMarkets = [{value: 'DA', label: 'Day Ahead'}, {value: 'RTBM', label: 'Real Time'}];
@@ -40,12 +40,28 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$timeout
             paginationPageSize: 24,
             enableSorting: true,
             columnDefs: [
-                { field: 'Interval', name: 'Date' },
+                { field: 'Interval', name: 'Date', width: '120', cellFilter: "date:'MM/dd/yyyy HH:mm':'UTC'" },
                 { field: 'Settlement_Location', name: 'Location' },
-                { field: 'LMP', name: 'LMP', cellFilter: 'uppercase'},
-                { field: 'MLC', name: 'MLC', cellFilter: 'uppercase'},
-                { field: 'MCC', name: 'MCC', cellFilter: 'uppercase'},
-                { field: 'MEC', name: 'MEC', cellFilter: 'uppercase'}
+                { field: 'LMP', name: 'LMP', width: '80',
+                 headerCellClass: function(grid, row, col, rowRenderIndex, colRenderIndex) {
+                                        return 'text-uppercase';
+                                    }
+                },
+                { field: 'MLC', name: 'MLC', width: '80',
+                 headerCellClass: function(grid, row, col, rowRenderIndex, colRenderIndex) {
+                                        return 'text-uppercase';
+                                    }
+                },
+                { field: 'MCC', name: 'MCC', width: '80',
+                 headerCellClass: function(grid, row, col, rowRenderIndex, colRenderIndex) {
+                                        return 'text-uppercase';
+                                    }
+                },
+                { field: 'MEC', name: 'MEC', width: '80',
+                 headerCellClass: function(grid, row, col, rowRenderIndex, colRenderIndex) {
+                                        return 'text-uppercase';
+                                    }
+                }
             ]
         };
         
@@ -67,59 +83,8 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$timeout
             $scope.openedTo = true;
         };
 
-        $scope.toUTCDate = function(dateStr){
-            var date = new Date(dateStr);
-            var _utc = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(),  date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
-            return _utc;
-        };
-        
-        function pad(n, width, z) {
-          z = z || '0';
-          n = n + '';
-          return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
-        }
-
-        $scope.toUTCDateString = function(dateStr){
-            var date = new Date(dateStr);
-            var _utc = pad((date.getUTCMonth()+1),2) + "-" + pad(date.getUTCDate(),2) + "-" + date.getUTCFullYear()  + " " + pad(date.getUTCHours(),2) + ":" + pad(date.getUTCMinutes(),2);
-            return _utc;
-        };
-
-        //this method is for showing only 4 lines, for a single location
-        $scope.fillGraphData = function(){
-            var serie = $scope.graphSelectedSeries;
-            $scope.labels = [];
-            var LMP = [], MLC = [], MCC = [], MEC = [];
-            $scope.graphData = [];
-            var avgLMP = 0, avgMLC = 0, avgMCC = 0, avgMEC = 0;
-            $scope.dataList.forEach(function(item){
-                avgLMP += item.LMP; avgMLC += item.MLC; avgMCC += item.MCC; avgMEC += item.MEC;
-                $scope.labels.push($scope.toUTCDateString(item.Interval));
-                LMP.push(item.LMP);
-                MLC.push(item.MLC);
-                MCC.push(item.MCC);
-                MEC.push(item.MEC);
-            });
-            $scope.averageLMP = (avgLMP / $scope.dataList.length).toFixed(2); 
-            $scope.averageMLC = (avgMLC / $scope.dataList.length).toFixed(2); 
-            $scope.averageMCC = (avgMCC / $scope.dataList.length).toFixed(2); 
-            $scope.averageMEC = (avgMEC / $scope.dataList.length).toFixed(2); 
-            if(serie === "ALL" || serie === "LMP"){
-                $scope.graphData.push(LMP);
-            }
-            if(serie === "ALL" || serie === "MLC"){
-                $scope.graphData.push(MLC);
-            }
-            if(serie === "ALL" || serie === "MCC"){
-                $scope.graphData.push(MCC);
-            }
-            if(serie === "ALL" || serie === "MEC"){
-                $scope.graphData.push(MEC);
-            }
-        };
-        
         //method for multiple locations
-        $scope.fillGraphDataNew = function(){
+        $scope.fillGraphData = function(){
             var serie = $scope.graphSelectedSeries;
             $scope.labels = [];
             $scope.graphData = [];
@@ -132,8 +97,9 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$timeout
                 measures = ["LMP", "MLC", "MCC", "MEC"];
             }
             $scope.dataList.forEach(function(item){
-                if(newLabels.indexOf($scope.toUTCDateString(item.Interval))===-1){
-                    newLabels.push($scope.toUTCDateString(item.Interval));
+                
+                if(newLabels.indexOf($filter('date')(item.Interval, 'MM/dd/yyyy HH:mm', 'UTC'))===-1){
+                    newLabels.push($filter('date')(item.Interval, 'MM/dd/yyyy HH:mm', 'UTC'));
                 }
                 //check series
                 measures.forEach(function(measure){
@@ -179,13 +145,13 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$timeout
                 $scope.totalItems = $scope.dataList.length;
                  $scope.gridOptions.data = $scope.dataList;
                 //fill the graph data
-                $scope.fillGraphDataNew();
+                $scope.fillGraphData();
             });
         };
 
         $scope.filterSeries = function(serie){
             $scope.graphSelectedSeries = serie;
-            $scope.fillGraphDataNew();
+            $scope.fillGraphData();
         };
 
         $scope.fillLocations = function(callback){
@@ -203,7 +169,8 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$timeout
         $scope.exportData = function(){
             var finalData = [ ['Interval', 'Settlement_Location', 'Pnode', 'LMP', 'MLC', 'MCC', 'MEC'] ];
             $scope.dataList.forEach(function(item){
-                finalData.push( [$scope.toUTCDateString(item.Interval), item.Settlement_Location, item.Pnode, item.LMP, item.MLC, item.MCC, item.MEC] );
+                $filter('date')(item.Interval, 'MM/dd/yyyy HH:mm', 'UTC')
+                finalData.push( [$filter('date')(item.Interval, 'MM/dd/yyyy HH:mm', 'UTC'), item.Settlement_Location, item.Pnode, item.LMP, item.MLC, item.MCC, item.MEC] );
             });
             return(finalData);
         };
