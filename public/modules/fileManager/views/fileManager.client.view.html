@@ -45,7 +45,7 @@
         </div>
         <div class="col-lg-7">
             <div class="panel panel-default">
-                <div class="panel-heading">Loaded files </div>
+                <div class="panel-heading">Loaded files <span ng-class="filesDownloadingPanelClass"> </span></div>
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-md-12">
@@ -66,7 +66,7 @@
                                     </span>
                                 </div>
                               </div>
-                              <button class="btn btn-default pull-right" ng-click="listLoadedFiles()"><em class="icon-magnifier"></em> Filter</button>
+                              <button class="btn btn-default btn-success pull-right" ng-click="listLoadedFiles()"><em class="icon-magnifier"></em> Filter</button>
                             </form>
                             <br />
                         </div>
@@ -77,6 +77,19 @@
                 </div>
             </div>
         </div>
-    </div>        
+    </div>      
+    <div class="row">
+        <div class="col-lg-5">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    FTP files 
+                    <button class="btn btn-success pull-right" ng-if="selectedBranch" ng-click="loadSelectedFile()"><em class="icon-cloud-download"></em> Load selected</button>
+                </div>
+                <div ng-class="filesPanelClass">
+                    <abn-tree tree-data="treeData" tree-control="my_tree" on-select="my_tree_handler(branch)" expand-level="2" initial-selection="Granny Smith"></abn-tree>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 

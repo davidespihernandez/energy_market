@@ -136,11 +136,29 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$filter'
             $scope.series = newSeries;
         };
         
+        $scope.toUTCDate = function(dateStr){
+            var date = new Date(dateStr);
+            var _utc = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(),  date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
+            return _utc;
+        };
 
+        
         $scope.search = function(){
             console.log("Searching ");
             $scope.panelClass = "panel-body whirl standard";
-            $scope.dataList = AnalysisData.query({market: $scope.comboboxes.selectedMarket.value, locations: $scope.comboboxes.selectedLocations, dateFrom: $scope.dateFromInput, dateTo: $scope.dateToInput}, function(){
+            var dateFrom = undefined, dateTo = undefined
+            
+            if($scope.dateFromInput){
+                dateFrom = new Date(Date.UTC($scope.dateFromInput.getFullYear(), $scope.dateFromInput.getMonth(), $scope.dateFromInput.getDate()))
+            }
+            if($scope.dateToInput){
+                dateTo = new Date(Date.UTC($scope.dateToInput.getFullYear(), $scope.dateToInput.getMonth(), $scope.dateToInput.getDate()))
+            }
+            
+            $scope.dataList = AnalysisData.query({market: $scope.comboboxes.selectedMarket.value, 
+                                                  locations: $scope.comboboxes.selectedLocations, 
+                                                  dateFrom: dateFrom, 
+                                                  dateTo: dateTo}, function(){
                 $scope.panelClass = "panel-body";
                 $scope.totalItems = $scope.dataList.length;
                  $scope.gridOptions.data = $scope.dataList;
@@ -169,7 +187,7 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$filter'
         $scope.exportData = function(){
             var finalData = [ ['Interval', 'Settlement_Location', 'Pnode', 'LMP', 'MLC', 'MCC', 'MEC'] ];
             $scope.dataList.forEach(function(item){
-                $filter('date')(item.Interval, 'MM/dd/yyyy HH:mm', 'UTC')
+                $filter('date')(item.Interval, 'MM/dd/yyyy HH:mm', 'UTC');
                 finalData.push( [$filter('date')(item.Interval, 'MM/dd/yyyy HH:mm', 'UTC'), item.Settlement_Location, item.Pnode, item.LMP, item.MLC, item.MCC, item.MEC] );
             });
             return(finalData);

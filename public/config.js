@@ -22,7 +22,8 @@ var ApplicationConfiguration = (function() {
                                                'ngCsv',
                                                'ui.select',
                                                'ui.grid',
-                                               'ui.grid.pagination'];
+                                               'ui.grid.pagination',
+                                               'angularBootstrapNavTree'];
     
 	// Add a new vertical module
 	var registerModule = function(moduleName, dependencies) {

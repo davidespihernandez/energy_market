@@ -22,7 +22,8 @@ module.exports = {
                  'public/lib/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css',
                  'public/lib/chosen_v1.2.0/chosen.min.css',
                  'public/lib/angular-ui-select/dist/select.css',
-                 'public/lib/ui-grid/ui-grid.min.css'
+                 'public/lib/ui-grid/ui-grid.min.css',
+                 'public/lib/angular-bootstrap-nav-tree/dist/abn_tree.css'
 			],
 			js: [
 				'public/lib/jquery/dist/jquery.js',
@@ -62,7 +63,8 @@ module.exports = {
                 'public/lib/chosen_v1.2.0/chosen.jquery.min.js',
                 'public/lib/angular-chosen-localytics/chosen.js',
                 'public/lib/angular-ui-select/dist/select.js',
-                'public/lib/ui-grid/ui-grid.min.js'
+                'public/lib/ui-grid/ui-grid.min.js',
+                'public/lib/angular-bootstrap-nav-tree/dist/abn_tree_directive.js'
 				// 'public/lib/jquery/dist/jquery.js',
 				// 'public/lib/angular/angular.js',
 				// 'public/lib/angular-resource/angular-resource.js',

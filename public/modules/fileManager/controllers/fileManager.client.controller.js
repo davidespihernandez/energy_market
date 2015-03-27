@@ -6,7 +6,7 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
 
         console.log("FileManagerController!");
         $scope.currentDirectory = ''; //default dir
-        $scope.showFileDownloading = false;
+        $scope.filesDownloadingPanelClass = "pull-right";
         $scope.filesPanelClass = "panel-body";
 
         $scope.currentPage = 1;
@@ -16,7 +16,6 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
         $scope.dateToInput = "";
         $scope.fileList = [];
         $scope.fileLoadedList = [];
-        $scope.pagedFileLoadedList = [];
         
         //Grid
         $scope.gridOptions = {
@@ -99,21 +98,18 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
         $scope.listLoadedFiles = function(){
             console.log("Listing loaded files");
             $scope.fileLoadedList = [];
-            $scope.pagedFileLoadedList = [];
-    //        $http.get('/loadedfilelist?dateFrom=' + $scope.dateFromInput + "&dateTo=" + $scope.dateToInput).success( function(response){
-    //            console.log('Files retrieved ');
-    //            $scope.fileLoadedList = response;
-    //            $scope.totalItems = $scope.fileLoadedList.length;
-    //            console.log('Total files ' + $scope.totalItems);
-    //            var indexFrom = ($scope.currentPage-1)*$scope.itemsPerPage;
-    //            $scope.pagedFileLoadedList = $scope.fileLoadedList.slice(indexFrom, indexFrom + $scope.itemsPerPage);
-    //        });
-            $scope.fileLoadedList = LoadedFiles.query({dateFrom: $scope.dateFromInput, dateTo: $scope.dateToInput}, function(){
+            var dateFrom = undefined, dateTo = undefined
+            
+            if($scope.dateFromInput){
+                dateFrom = new Date(Date.UTC($scope.dateFromInput.getFullYear(), $scope.dateFromInput.getMonth(), $scope.dateFromInput.getDate()))
+            }
+            if($scope.dateToInput){
+                dateTo = new Date(Date.UTC($scope.dateToInput.getFullYear(), $scope.dateToInput.getMonth(), $scope.dateToInput.getDate()))
+            }
+            
+            $scope.fileLoadedList = LoadedFiles.query({dateFrom: dateFrom, dateTo: dateTo}, function(){
                 console.log('Finished list loaded files ');
                 $scope.totalItems = $scope.fileLoadedList.length;
-                console.log('Total files ' + $scope.totalItems);
-                var indexFrom = ($scope.currentPage-1)*$scope.itemsPerPage;
-                $scope.pagedFileLoadedList = $scope.fileLoadedList.slice(indexFrom, indexFrom + $scope.itemsPerPage);
                 $scope.gridOptions.data = $scope.fileLoadedList;
             });
         };
@@ -121,7 +117,7 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
         $scope.loadFile = function(fileName){
             console.log("Loading file " + fileName);
             var fullPath = $scope.currentDirectory + "/" + fileName;
-            $scope.showFileDownloading = true;
+            $scope.filesDownloadingPanelClass = "pull-right whirl standard";
     //        $http.post('/importfile?filePath=' + fullPath).success( function(response){
     //            $scope.showFileDownloading = false;
     //            //reload files
@@ -129,16 +125,10 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
     //        });
             $scope.fileList = Files.save({dir: fullPath}, function(){
                 console.log('Finished load file ');
-                $scope.showFileDownloading = false;
+                $scope.filesDownloadingPanelClass = "pull-right";
                 $scope.listLoadedFiles();
                 $scope.setDir($scope.currentDirectory);
             });
-        };
-
-        $scope.pageChanged = function(){
-            console.log('Page changed to ' + $scope.currentPage);
-            var indexFrom = ($scope.currentPage-1)*$scope.itemsPerPage;
-            $scope.pagedFileLoadedList = $scope.fileLoadedList.slice(indexFrom, indexFrom + $scope.itemsPerPage);
         };
 
         $scope.initPage = function(){
@@ -148,8 +138,114 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
             //call the function to show loaded files
             $scope.listLoadedFiles();
             //list current dir files
-            $scope.setDir('Markets/DA/LMP_By_SETTLEMENT_LOC/2015/03');
+            $scope.setDir('Markets/DA/LMP_By_SETTLEMENT_LOC');
         };
+        
+//tree
+        
+        $scope.getChildren = function(branch){
+            console.log("Loading children for " + branch.data.fullPath);
+            $scope.filesPanelClass = "panel-body whirl standard";            
+            Files.query({dir: branch.data.fullPath}, function(response){
+                console.log('Finished load children ');
+                branch.children = [];
+                response.forEach(function(file){
+                    var newBranch = {
+                        label: file.name,
+                        data: {
+                            name: file.name,
+                            fullPath: branch.data.fullPath + '/' + file.name,
+                            size: file.size,
+                            type: file.type,
+                            reloadable: (file.type==='d')
+                        }
+                    };
+                    if(file.type==='d'){
+                        newBranch.children = [{label: 'Reloading...'}]
+                    }
+                    else{
+                        newBranch.label = file.name + " (" + Math.round(file.size/10000)/100 + " MB)"
+                    }
+                    branch.children.push(newBranch);
+                });
+                $scope.filesPanelClass = "panel-body";
+            });
+
+        };
+        
+        $scope.treeData = [
+            {
+                label: 'DA',
+                data: {
+                    name: 'DA',
+                    fullPath: 'Markets/DA',
+                    size: 0,
+                    type: 'd',
+                    reloadable: false
+                },
+                children: [
+                    {
+                        label: 'LMP_By_SETTLEMENT_LOC',
+                        data: {
+                            name: 'LMP_By_SETTLEMENT_LOC',
+                            fullPath: 'Markets/DA/LMP_By_SETTLEMENT_LOC',
+                            size: 0,
+                            type: 'd',
+                            reloadable: true
+                        },
+                        children: [{label: 'Reloading...'}]
+                    }
+                ]
+            }, {
+                label: 'RTBM',
+                data: {
+                    name: 'RTBM',
+                    fullPath: 'Markets/RTBM',
+                    size: 0,
+                    type: 'd',
+                    reloadable: false
+                },
+                children: [
+                    {
+                        label: 'LMP_By_SETTLEMENT_LOC',
+                        data: {
+                            name: 'LMP_By_SETTLEMENT_LOC',
+                            fullPath: 'Markets/RTBM/LMP_By_SETTLEMENT_LOC',
+                            size: 0,
+                            type: 'd',
+                            reloadable: true
+                        },
+                        children: [{label: 'Reloading...'}]
+                    }
+                ]
+            }
+        ];
+                
+        var tree;
+        // This is our API control variable
+        $scope.my_tree = tree = {};        
+        $scope.selectedBranch = null;
+        $scope.my_tree_handler = function(branch) {
+            if(branch.data.type==='d' && branch.data.reloadable===true){
+                $scope.getChildren(branch);
+            }
+            if(branch.data.type!='d'){
+                $scope.selectedBranch = branch;
+            } else{
+                $scope.selectedBranch = null;
+            }
+        };        
+        
+        $scope.loadSelectedFile = function(){
+            console.log("Loading file " + $scope.selectedBranch.data.fullPath);
+            $scope.filesDownloadingPanelClass = "pull-right whirl standard";
+            $scope.fileList = Files.save({dir: $scope.selectedBranch.data.fullPath}, function(){
+                console.log('Finished load file ');
+                $scope.filesDownloadingPanelClass = "pull-right";
+                $scope.listLoadedFiles();
+                $scope.setDir($scope.currentDirectory);
+            });
+        }
         
 	}
 ]);

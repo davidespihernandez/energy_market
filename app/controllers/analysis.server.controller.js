@@ -71,7 +71,6 @@ exports.search = function(req, res) {
     query.sort({ Interval: 'asc' }).exec(function (err, data) {
         if (err) return console.error(err);
         console.log("Return data -> " + data.length);
-        console.log(data);
         res.json(data);
     });
 };                                    
