@@ -98,13 +98,13 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
         $scope.listLoadedFiles = function(){
             console.log("Listing loaded files");
             $scope.fileLoadedList = [];
-            var dateFrom = undefined, dateTo = undefined
+            var dateFrom = undefined, dateTo = undefined;
             
             if($scope.dateFromInput){
-                dateFrom = new Date(Date.UTC($scope.dateFromInput.getFullYear(), $scope.dateFromInput.getMonth(), $scope.dateFromInput.getDate()))
+                dateFrom = new Date(Date.UTC($scope.dateFromInput.getFullYear(), $scope.dateFromInput.getMonth(), $scope.dateFromInput.getDate()));
             }
             if($scope.dateToInput){
-                dateTo = new Date(Date.UTC($scope.dateToInput.getFullYear(), $scope.dateToInput.getMonth(), $scope.dateToInput.getDate()))
+                dateTo = new Date(Date.UTC($scope.dateToInput.getFullYear(), $scope.dateToInput.getMonth(), $scope.dateToInput.getDate()));
             }
             
             $scope.fileLoadedList = LoadedFiles.query({dateFrom: dateFrom, dateTo: dateTo}, function(){
@@ -161,10 +161,10 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
                         }
                     };
                     if(file.type==='d'){
-                        newBranch.children = [{label: 'Reloading...'}]
+                        newBranch.children = [{label: 'Loading...'}];
                     }
                     else{
-                        newBranch.label = file.name + " (" + Math.round(file.size/10000)/100 + " MB)"
+                        newBranch.label = file.name + " (" + Math.round(file.size/10000)/100 + " MB)";
                     }
                     branch.children.push(newBranch);
                 });
@@ -193,7 +193,7 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
                             type: 'd',
                             reloadable: true
                         },
-                        children: [{label: 'Reloading...'}]
+                        children: [{label: 'Loading...'}]
                     }
                 ]
             }, {
@@ -215,7 +215,7 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
                             type: 'd',
                             reloadable: true
                         },
-                        children: [{label: 'Reloading...'}]
+                        children: [{label: 'Loading...'}]
                     }
                 ]
             }
@@ -245,7 +245,7 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
                 $scope.listLoadedFiles();
                 $scope.setDir($scope.currentDirectory);
             });
-        }
+        };
         
 	}
 ]);

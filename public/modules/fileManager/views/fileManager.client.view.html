@@ -5,41 +5,49 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Available market data</div>
                 <div ng-class="filesPanelClass">
-                    <div class="table-responsive">
-                        <ul class="list-inline">
-                            <li><i class="fa fa-folder-open-o"></i></li>
-                            <li ng-repeat="data in currentDirectoryComponents">
-                                <a ng-click="setDir(data.subDirFullString)">{{data.subDirString}}</a> / 
-                            </li>
-                        </ul>
+                    <tabset>
+                        <tab heading="Explorer">
+                            <div class="table-responsive">
+                                <ul class="list-inline">
+                                    <li><i class="fa fa-folder-open-o"></i></li>
+                                    <li ng-repeat="data in currentDirectoryComponents">
+                                        <a ng-click="setDir(data.subDirFullString)">{{data.subDirString}}</a> / 
+                                    </li>
+                                </ul>
 
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Size</th>
-                                    <th width="40px"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr ng-repeat="file in fileList">
-                                    <td ng-if="file.type === 'd'">
-                                        <a ng-click="listDir(file.name)">{{file.name}}</a>
-                                    </td>
-                                    <td ng-if="file.type != 'd'">
-                                        {{file.name}}
-                                    </td>
-                                    <td>{{file.size/1000000 | number : 2}} (MB)</td>
-                                    <td ng-if="file.type === 'd'">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Size</th>
+                                            <th width="40px"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="file in fileList">
+                                            <td ng-if="file.type === 'd'">
+                                                <a ng-click="listDir(file.name)">{{file.name}}</a>
+                                            </td>
+                                            <td ng-if="file.type != 'd'">
+                                                {{file.name}}
+                                            </td>
+                                            <td>{{file.size/1000000 | number : 2}} (MB)</td>
+                                            <td ng-if="file.type === 'd'">
 
-                                    </td>
-                                    <td ng-if="file.type != 'd'">
-                                        <button class="btn btn-default btn-xs" ng-click="loadFile(file.name)"><em class="icon-cloud-download"></em></button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                      </table>
-                    </div>
+                                            </td>
+                                            <td ng-if="file.type != 'd'">
+                                                <button class="btn btn-default btn-xs" ng-click="loadFile(file.name)"><em class="icon-cloud-download"></em></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                              </table>
+                            </div>
+                        </tab>
+                        <tab heading="Tree">
+                            <button class="btn btn-success pull-right" ng-if="selectedBranch" ng-click="loadSelectedFile()"><em class="icon-cloud-download"></em> Load selected</button>
+                            <abn-tree tree-data="treeData" tree-control="my_tree" on-select="my_tree_handler(branch)" expand-level="2" initial-selection="Granny Smith"></abn-tree>
+                        </tab>
+                    </tabset>
                 </div>
             </div>
         </div>
@@ -78,18 +86,5 @@
             </div>
         </div>
     </div>      
-    <div class="row">
-        <div class="col-lg-5">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    FTP files 
-                    <button class="btn btn-success pull-right" ng-if="selectedBranch" ng-click="loadSelectedFile()"><em class="icon-cloud-download"></em> Load selected</button>
-                </div>
-                <div ng-class="filesPanelClass">
-                    <abn-tree tree-data="treeData" tree-control="my_tree" on-select="my_tree_handler(branch)" expand-level="2" initial-selection="Granny Smith"></abn-tree>
-                </div>
-            </div>
-        </div>
-    </div>
 </section>
 

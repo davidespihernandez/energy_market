@@ -146,7 +146,7 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$filter'
         $scope.search = function(){
             console.log("Searching ");
             $scope.panelClass = "panel-body whirl standard";
-            var dateFrom = undefined, dateTo = undefined
+            var dateFrom = undefined, dateTo = undefined;
             
             if($scope.dateFromInput){
                 dateFrom = new Date(Date.UTC($scope.dateFromInput.getFullYear(), $scope.dateFromInput.getMonth(), $scope.dateFromInput.getDate()))
