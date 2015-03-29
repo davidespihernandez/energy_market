@@ -12,3 +12,9 @@ angular.module('filemanager').factory('LoadedFiles', ['$resource',
 		return $resource('/loadedfiles', {});
 	}
 ]);
+
+angular.module('filemanager').factory('AvailableFiles', ['$resource',
+	function($resource) {
+		return $resource('/availablefiles', {});
+	}
+]);

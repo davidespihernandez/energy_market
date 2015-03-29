@@ -16,4 +16,7 @@ module.exports = function(app) {
 	app.route('/loadedfiles')
 		.get(users.requiresLogin, fileManager.listLoadedFiles);
     
+	app.route('/availablefiles')
+		.get(users.requiresLogin, fileManager.listAvailableFiles);
+    
 };

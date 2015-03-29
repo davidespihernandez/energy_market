@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('filemanager').controller('FilemanagerController', ['$scope', '$stateParams', '$location', 'Authentication', 'Files', 'LoadedFiles',
-	function($scope, $stateParams, $location, Authentication, Files, LoadedFiles) {
+angular.module('filemanager').controller('FilemanagerController', ['$scope', '$stateParams', '$location', 'Authentication', 'Files', 'LoadedFiles', 'AvailableFiles',
+	function($scope, $stateParams, $location, Authentication, Files, LoadedFiles, AvailableFiles) {
 		$scope.authentication = Authentication;
 
         console.log("FileManagerController!");
@@ -16,9 +16,14 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
         $scope.dateToInput = "";
         $scope.fileList = [];
         $scope.fileLoadedList = [];
+        $scope.fileAvailableList = [];
+        
+        $scope.availableMarkets = [{value: 'DA', label: 'Day Ahead'}, {value: 'RTBM', label: 'Real Time'}];
+        $scope.comboboxes = {};
+        $scope.comboboxes.selectedMarket = $scope.availableMarkets[0];
         
         //Grid
-        $scope.gridOptions = {
+        $scope.loadedGridOptions = {
             paginationPageSizes: [15, 30, 45],
             paginationPageSize: 15,
             enableSorting: true,
@@ -26,6 +31,18 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
                 { field: 'market', name: 'Market', width: '80' },
                 { field: 'filePath', name: 'Path' },
                 { field: 'date', name: 'Date', width: '120', cellFilter: "date:'MMMM dd, yyyy':'UTC'"}
+            ]
+        };
+        
+        $scope.availableGridOptions = {
+            paginationPageSizes: [30, 45, 60],
+            paginationPageSize: 30,
+            enableSorting: true,
+            columnDefs: [
+                { field: 'year', name: 'Year', width: '80' },
+                { field: 'month', name: 'Month', width: '100' },
+                { field: 'date', name: 'Date', width: '120', cellFilter: "date:'MMMM dd, yyyy':'UTC'"},
+                { field: 'name', name: 'Name'}
             ]
         };
 
@@ -98,7 +115,7 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
         $scope.listLoadedFiles = function(){
             console.log("Listing loaded files");
             $scope.fileLoadedList = [];
-            var dateFrom = undefined, dateTo = undefined;
+            var dateFrom, dateTo;
             
             if($scope.dateFromInput){
                 dateFrom = new Date(Date.UTC($scope.dateFromInput.getFullYear(), $scope.dateFromInput.getMonth(), $scope.dateFromInput.getDate()));
@@ -110,7 +127,7 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
             $scope.fileLoadedList = LoadedFiles.query({dateFrom: dateFrom, dateTo: dateTo}, function(){
                 console.log('Finished list loaded files ');
                 $scope.totalItems = $scope.fileLoadedList.length;
-                $scope.gridOptions.data = $scope.fileLoadedList;
+                $scope.loadedGridOptions.data = $scope.fileLoadedList;
             });
         };
 
@@ -245,6 +262,34 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
                 $scope.listLoadedFiles();
                 $scope.setDir($scope.currentDirectory);
             });
+        };
+        
+        $scope.listAvailableFiles = function(){
+            console.log("Listing available files");
+            $scope.fileAvailableList = [];
+            var dateFrom, dateTo;
+            
+            if($scope.dateFromInput){
+                dateFrom = new Date(Date.UTC($scope.dateFromInput.getFullYear(), $scope.dateFromInput.getMonth(), $scope.dateFromInput.getDate()));
+            }
+            if($scope.dateToInput){
+                dateTo = new Date(Date.UTC($scope.dateToInput.getFullYear(), $scope.dateToInput.getMonth(), $scope.dateToInput.getDate()));
+            }
+            
+            $scope.fileAvailableList = AvailableFiles.query({dateFrom: dateFrom, dateTo: dateTo, market: $scope.comboboxes.selectedMarket.value}, function(response){
+                console.log('Finished list available files ');
+//                $scope.loadedGridOptions.data = $scope.fileLoadedList;
+                console.log(response);
+            });
+            
+        };
+        
+        $scope.search = function(){
+            console.log('Searching...');
+            //list loaded files
+            $scope.listLoadedFiles();
+            //list also available files
+            $scope.listAvailableFiles();
         };
         
 	}

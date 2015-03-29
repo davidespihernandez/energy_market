@@ -41,7 +41,9 @@ exports.listFTP = function(req, res){
 /**
  * Receives a full path file name and extracts the info into an object
  * for example: Markets/DA/LMP_By_SETTLEMENT_LOC/2015/03/DA-LMP-SL-201503010100.csv
- * or for RTBM ftp://pubftp.spp.org/Markets/RTBM/LMP_By_SETTLEMENT_LOC/2015/03/01/filename??.csv
+ * or for RTBM Markets/RTBM/LMP_By_SETTLEMENT_LOC/2015/03/01/RTBM-LMP-SL-201503010005.csv
+ * The last file for RTBM folder corresponds to the next day
+ * Markets/RTBM/LMP_By_SETTLEMENT_LOC/2015/03/01/RTBM-LMP-SL-201503020000.csv
 **/
 
 function fileNameInfo (fileName){
@@ -205,5 +207,35 @@ exports.listLoadedFiles = function(req, res) {
         res.json(marketFiles);
     });
 };
+
+/**
+ * Returns a list of dates between two dates.
+ * Takes into account the market (days for DA, each five minutes for RTBM)
+**/
                                     
-                                    
+function datesBetween(startDate, endDate, market){
+    console.log('datesBetween');
+    var dates = [];
+    console.log(startDate);
+    var tempDate = new Date(new Date(startDate).getTime());
+    var increments = {};
+    increments.DA = 24 * 60 * 60 * 1000;
+    increments.RTBM = 5 * 60 * 1000;
+    console.log('Temp date');
+    console.log(tempDate);
+    var endDateDate = new Date(endDate);
+    while(tempDate.getTime()<=endDateDate.getTime()){
+        dates.push(tempDate);
+        tempDate = new Date(tempDate.getTime() + increments[market]);
+    }
+    return(dates);
+}
+
+exports.listAvailableFiles = function(req, res) {
+    console.log('listAvailableFiles');
+    console.log(req.query);
+    var dates = datesBetween(req.query.dateFrom, req.query.dateTo, req.query.market);
+    console.log(dates);
+    res.json(dates);
+};
+
