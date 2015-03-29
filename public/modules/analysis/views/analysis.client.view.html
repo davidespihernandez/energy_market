@@ -1,21 +1,12 @@
-<h3>Data Analysis</h3>
+<h3 data-ng-controller="TitleController">Data Analysis for {{marketName}} </h3>
 <section data-ng-controller="AnalysisController" data-ng-init="initPage()">
     <div class="row">
         <div class="col-lg-12">
-            <div class="panel panel-default">
+            <div ng-class="panelColor">
                 <!-- Default panel contents -->
                 <div class="panel-heading">Data Review: Period and Location</div>
                 <div class="panel-body">
                     <form class="form-inline">
-                      <div class="form-group" style="width: 150px">
-                        <ui-select ng-model="comboboxes.selectedMarket" theme="bootstrap" ng-disabled="disabled" class="text-left">
-                           <ui-select-match placeholder="Market...">{{$select.selected.label}}</ui-select-match>
-                           <ui-select-choices repeat="market in availableMarkets | filter: $select.search">
-                              <span ng-bind-html="market.label | highlight: $select.search"></span>
-                              <small ng-bind-html="market.value | highlight: $select.search"></small>
-                           </ui-select-choices>
-                        </ui-select>
-                      </div>
                       <div class="form-group">
                         <div class="input-group">
                             <input type="text" placeholder="Start date" class="form-control" datepicker-popup="dd-MMMM-yyyy" ng-model="dateFromInput" is-open="openedFrom" ng-required="false" close-text="Close" />
@@ -32,8 +23,8 @@
                             </span>
                         </div>
                       </div>
-                     <div class="form-group" style="width: 450px">
-                        <ui-select multiple="" ng-model="comboboxes.selectedLocations" theme="bootstrap" ng-disabled="disabled" style="width: 450px">
+                     <div class="form-group" style="width: 550px">
+                        <ui-select multiple="" ng-model="comboboxes.selectedLocations" theme="bootstrap" ng-disabled="disabled" style="width: 550px">
                            <ui-select-match placeholder="Select locations...">{{$item.label}}</ui-select-match>
                            <ui-select-choices repeat="location in locations | filter:$select.search">
                                <div ng-bind-html="location.value | highlight: $select.search"></div>
@@ -47,12 +38,12 @@
     </div>
     <div class="row">
         <div class="col-lg-6">
-            <div class="panel panel-default">
+            <div ng-class="panelColor">
                 <div class="panel-heading"> 
                   Data 
-                  <span class="pull-right">
-                      <button class="btn btn-primary btn-sm" type="button" ng-csv="exportData()" filename="market_export.csv"> <em class="fa fa-download"></em> Excel ({{totalItems}} rows) </button>
-                  </span>
+                    <span class="pull-right">
+                      <a class="btn btn-default btn-xs" ng-csv="exportData()" filename="market_export.csv"> <em class="fa fa-download"></em> Excel ({{totalItems}} rows) </a>
+                    </span>
                 </div>
                 <div class="panel-body">
                     <div class="table-responsive">
@@ -62,7 +53,7 @@
             </div>            
         </div>
         <div class="col-lg-6">
-            <div class="panel panel-default">
+            <div ng-class="panelColor">
                 <!-- Default panel contents -->
                 <div class="panel-heading">
                     Data Review: Visual Reference

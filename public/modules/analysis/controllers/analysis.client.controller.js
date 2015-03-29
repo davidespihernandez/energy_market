@@ -8,6 +8,15 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$filter'
         $scope.comboboxes = {};
         $scope.comboboxes.selectedLocations = [];
         $scope.comboboxes.selectedMarket = $scope.availableMarkets[0];
+        $scope.panelColor = 'panel panel-primary';
+        $scope.marketName = 'Day Ahead';
+        $scope.isDayAhead = true;
+        if($stateParams.market === 'RTBM'){
+            $scope.comboboxes.selectedMarket = $scope.availableMarkets[1];
+            $scope.panelColor = 'panel panel-warning';
+            $scope.marketName = 'Real Time';
+            $scope.isDayAhead = false;
+        }
         $scope.panelClass = "panel-body";
 
         console.log("AnalysisController!");
@@ -206,3 +215,15 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$filter'
         };
 	}
 ]);
+
+angular.module('analysis').controller('TitleController', ['$scope', '$filter', '$timeout', '$stateParams', '$location', 'Authentication', 'AnalysisData', 'Locations',
+	function($scope, $filter, $timeout, $stateParams, $location, Authentication, AnalysisData, Locations) {
+        $scope.marketName = 'Day Ahead';
+        if($stateParams.market === 'RTBM'){
+            $scope.marketName = 'Real Time';
+        }
+	}
+]);
+        
+
+
