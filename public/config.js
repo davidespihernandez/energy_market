@@ -23,7 +23,8 @@ var ApplicationConfiguration = (function() {
                                                'ui.select',
                                                'ui.grid',
                                                'ui.grid.pagination',
-                                               'angularBootstrapNavTree'];
+                                               'angularBootstrapNavTree',
+                                               'btford.socket-io'];
     
 	// Add a new vertical module
 	var registerModule = function(moduleName, dependencies) {
