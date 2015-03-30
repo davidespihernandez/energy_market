@@ -18,9 +18,6 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
         $scope.comboboxes = {};
         $scope.comboboxes.selectedMarket = $scope.availableMarkets[0];
         
-        $scope.notifications = {};
-        var index = 0;
-        
         //Grid
         $scope.loadedGridOptions = {
             paginationPageSizes: [15, 30, 45],
@@ -124,10 +121,6 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
         
         //socket.io
         Socket.on('file.import.end', function(file) {
-            var i;
-            i = index++;
-            $scope.notifications[i] = 'File ' + file.fileName + ' imported!';
-            
             $scope.filesLoading--;
             if($scope.filesLoading<0){
                 $scope.filesLoading = 0;
@@ -137,9 +130,6 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
         });
         
         Socket.on('file.import.start', function(file) {
-            var i;
-            i = index++;
-            $scope.notifications[i] = 'File ' + file.fileName + ' import started!';
             $scope.filesLoading++;
             console.log(file);
         });

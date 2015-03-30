@@ -24,8 +24,7 @@ var ApplicationConfiguration = (function() {
                                                'ui.grid',
                                                'ui.grid.pagination',
                                                'angularBootstrapNavTree',
-                                               'btford.socket-io',
-                                               'growlNotifications'];
+                                               'btford.socket-io'];
     
 	// Add a new vertical module
 	var registerModule = function(moduleName, dependencies) {
