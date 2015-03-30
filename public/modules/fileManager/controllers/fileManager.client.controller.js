@@ -18,6 +18,9 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
         $scope.comboboxes = {};
         $scope.comboboxes.selectedMarket = $scope.availableMarkets[0];
         
+        $scope.notifications = {};
+        var index = 0;
+        
         //Grid
         $scope.loadedGridOptions = {
             paginationPageSizes: [15, 30, 45],
@@ -38,7 +41,7 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
                 { field: 'year', name: 'Year', width: '80' },
                 { field: 'month', name: 'Month', width: '100' },
                 { field: 'date', name: 'Date', width: '120', cellFilter: "date:'MMMM dd, yyyy':'UTC'"},
-                { field: 'name', name: 'Name'}
+                { field: 'fileName', name: 'Name'}
             ]
         };
 
@@ -90,34 +93,54 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
             
             $scope.fileAvailableList = AvailableFiles.query({dateFrom: dateFrom, dateTo: dateTo, market: $scope.comboboxes.selectedMarket.value}, function(response){
                 console.log('Finished list available files ');
-//                $scope.loadedGridOptions.data = $scope.fileLoadedList;
+                $scope.availableGridOptions.data = $scope.fileAvailableList;
                 console.log('Response from availableFile');
                 console.log(response);
             });
-            
         };
         
         $scope.search = function(){
-            console.log('Searching...');
             //list loaded files
             $scope.listLoadedFiles();
             //list also available files
             $scope.listAvailableFiles();
         };
         
+        $scope.importAvailableFiles = function(){
+            var dateFrom, dateTo;
+            
+            if($scope.dateFromInput){
+                dateFrom = new Date(Date.UTC($scope.dateFromInput.getFullYear(), $scope.dateFromInput.getMonth(), $scope.dateFromInput.getDate()));
+            }
+            if($scope.dateToInput){
+                dateTo = new Date(Date.UTC($scope.dateToInput.getFullYear(), $scope.dateToInput.getMonth(), $scope.dateToInput.getDate()));
+            }
+            console.log("Importing available files");
+            AvailableFiles.save({dateFrom: dateFrom, dateTo: dateTo, market: $scope.comboboxes.selectedMarket.value}, function(response){
+                console.log('Finished import available files ');
+                console.log(response);
+            });
+        };
+        
         //socket.io
         Socket.on('file.import.end', function(file) {
-            console.log('File import end');
-            filesLoading--;
-            if(filesLoading<0){
-                filesLoading = 0;
+            var i;
+            i = index++;
+            $scope.notifications[i] = 'File ' + file.fileName + ' imported!';
+            
+            $scope.filesLoading--;
+            if($scope.filesLoading<0){
+                $scope.filesLoading = 0;
             }
             console.log(file);
+            $scope.search();
         });
         
         Socket.on('file.import.start', function(file) {
-            console.log('File import start');
-            filesLoading++;
+            var i;
+            i = index++;
+            $scope.notifications[i] = 'File ' + file.fileName + ' import started!';
+            $scope.filesLoading++;
             console.log(file);
         });
         

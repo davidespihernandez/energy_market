@@ -11,6 +11,7 @@ var mongoose = require('mongoose'),
 	_ = require('lodash'),
     Client = require('ftp');
 var Q = require("q");
+var pad = require('pad');
 
 /**
  * List FTP files
@@ -226,9 +227,7 @@ exports.listLoadedFiles = function(req, res) {
 **/
                                     
 function listPossibleDates(startDate, endDate, market){
-    console.log('datesBetween');
     var dates = [];
-    console.log(startDate);
     var tempDate = new Date(new Date(startDate).getTime());
     var increments = {};
     increments.DA = 24 * 60 * 60 * 1000;
@@ -251,7 +250,6 @@ function listExistingDates(startDate, endDate, market, done){
     query = query.where('date').gte(startDate);
     query = query.where('date').lte(endDate);
     query = query.where('market').equals(market);
-    console.log('performing listExistingDates query');
     query.sort({ date: 'asc' }).exec(function (err, marketFiles) {
         if (err) return console.error(err);
         marketFiles.forEach(function(marketFile){
@@ -283,30 +281,53 @@ function dateFileInfo(market, date){
         //the date for path is the day before
         dateForPath = new Date(date.getTime() - (24 * 60 * 60 * 1000));
     }
-    var pathBase = 'Markets/' + market + '/LMP_By_SETTLEMENT_LOC/' + dateForPath.getUTCFullYear() + '/' + _.pad(dateForPath.getUTCMonth()+1,2,'0') + '/';
+    var pathBase = 'Markets/' + market + '/LMP_By_SETTLEMENT_LOC/' + dateForPath.getUTCFullYear() + '/' + pad(2, (dateForPath.getUTCMonth()+1).toString(),'0') + '/';
     var fullPath = pathBase;
-    var fileName
+    var fileName;
     if('DA' === market){
-        fileName = 'DA-LMP-SL-' + date.getUTCFullYear() + _.pad(date.getUTCMonth()+1,2,'0') + _.pad(date.getUTCDate(),2,'0') + '0100.csv';
+        fileName = 'DA-LMP-SL-' + date.getUTCFullYear() + pad(2, (date.getUTCMonth()+1).toString(),'0') + pad(2, date.getUTCDate().toString(),'0') + '0100.csv';
         fullPath += fileName;
     } else if('RTBM' === market){
-        fileName = 'RTBM-LMP-SL-' + date.getUTCFullYear() + _.pad(date.getUTCMonth()+1,2,'0') + _.pad(date.getUTCDate(),2,'0') + _.pad(date.getUTCHours(),2,'0') + _.pad(date.getUTCMinutes(),2,'0') + '.csv';
-        fullPath += _.pad(dateForPath.getUTCDate(),2,'0') + '/' + fileName;
+        fileName = 'RTBM-LMP-SL-' + date.getUTCFullYear() + pad(2, (date.getUTCMonth()+1).toString(),'0') + pad(2, date.getUTCDate().toString(),'0') + 
+            pad(2, date.getUTCHours().toString(),'0') + pad(2, date.getUTCMinutes().toString(),'0') + '.csv';
+        fullPath += pad(2, dateForPath.getUTCDate().toString(),'0') + '/' + fileName;
     }
     fileInfo.fullPath = fullPath;
     fileInfo.fileName = fileName;
     fileInfo.year = dateForPath.getUTCFullYear();
-    fileInfo.month = dateForPath.date.getUTCMonth()+1;
+    fileInfo.month = dateForPath.getUTCMonth()+1;
     return(fileInfo);
+}
+
+function difference(possibleDates, existingDates){
+    var endDates = [];
+    for (var i = 0; i < possibleDates.length; i++) { 
+        var exists = false;
+        for (var j = 0; j < existingDates.length && exists === false; j++) { 
+            if(existingDates[j].getTime() === possibleDates[i].getTime()){
+                exists = true;
+            }
+        }
+        if(!exists){
+            endDates.push(possibleDates[i]);
+        }
+    }
+    return(endDates);
 }
 
 function getAvailableFiles(startDate, endDate, market, done){
     var possibleDates = listPossibleDates(startDate, endDate, market);
     var existingDates = listExistingDates(startDate, endDate, market, function(existingDates){
-        var availableDates = _.difference(possibleDates, existingDates);
+        var availableDates = difference(possibleDates, existingDates);
+        console.log('Possible dates');
+        console.log(possibleDates);
+        console.log('Existing dates');
+        console.log(existingDates);
+        console.log('Available dates');
+        console.log(availableDates);
         var availableFiles = [];
         availableDates.forEach(function(date){
-            var file = dateFileInfo(req.query.market, date);
+            var file = dateFileInfo(market, date);
             availableFiles.push(file);
         });
         console.log('Returning available files');
@@ -322,7 +343,6 @@ exports.listAvailableFiles = function(req, res) {
     console.log('listAvailableFiles');
     console.log(req.query);
     getAvailableFiles(req.query.dateFrom, req.query.dateTo, req.query.market, function(availableFiles){
-        console.log(availableFiles);
         res.json(availableFiles);
     });
 };
@@ -392,16 +412,20 @@ function importSingleFile(c, file, socketio, done) {
         });
 
     });
-};
+}
 
 //launches the import for the available files, for a market, start and end date
 exports.importAvailableFiles = function(req, res) {
+    console.log('importAvailableFiles');
+    console.log(req.body);
     //connect to ftp server
     var c = new Client();
     c.on('ready', function() {
         console.log('Connected for import');
         var socketio = req.app.get('socketio');
-        getAvailableFiles(req.query.dateFrom, req.query.dateTo, req.query.market, function(availableFiles){
+        getAvailableFiles(req.body.dateFrom, req.body.dateTo, req.body.market, function(availableFiles){
+            console.log('available files to import ');
+            console.log(availableFiles);
             var totalFiles = availableFiles.length;
             var imported = 0;
             var the_promises = [];
@@ -417,13 +441,12 @@ exports.importAvailableFiles = function(req, res) {
                         c.end();
                     }
                     socketio.sockets.emit('file.import.end', file);
-                    deferred.resolve(result);
+                    deferred.resolve(totalRows);
                 });
                 the_promises.push(deferred.promise);
             });
             console.log('After loop');
             return Q.all(the_promises);
-            console.log('After q.all');
         });    
     });
 

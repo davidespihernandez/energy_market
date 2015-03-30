@@ -64,7 +64,10 @@ module.exports = {
                 'public/lib/angular-chosen-localytics/chosen.js',
                 'public/lib/angular-ui-select/dist/select.js',
                 'public/lib/ui-grid/ui-grid.min.js',
-                'public/lib/angular-bootstrap-nav-tree/dist/abn_tree_directive.js'
+                'public/lib/angular-bootstrap-nav-tree/dist/abn_tree_directive.js',
+                'public/lib/socket.io.js',
+                'public/lib/angular-socket-io/socket.min.js',
+                'public/lib/angular-growl-notifications/dist/angular-growl-notifications.min'
 				// 'public/lib/jquery/dist/jquery.js',
 				// 'public/lib/angular/angular.js',
 				// 'public/lib/angular-resource/angular-resource.js',

@@ -1,5 +1,11 @@
 <h3>FTP file management</h3>
 <section data-ng-controller="FilemanagerController" data-ng-init="initPage()">
+    <div ng-repeat="(id, notification) in notifications track by id">
+        <growl-notification>
+            {{notification}}
+        </growl-notification>
+    </div>
+    
     <div class="row">
         <div class="col-lg-12">
             <div class="panel panel-default">
@@ -38,9 +44,14 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-lg-5">
+        <div class="col-lg-6">
             <div class="panel panel-default">
-                <div class="panel-heading">Available Market Data</div>
+                <div class="panel-heading">
+                    Available Market Data
+                    <span class="pull-right">
+                      <a class="btn btn-primary btn-xs" ng-click="importAvailableFiles()" ng-disabled="!fileAvailableList.length"> <em class="fa fa-cloud-download"></em> Load {{fileAvailableList.length}} files </a>
+                    </span>
+                </div>
                 <div class="panel-body">
                     <div class="table-responsive">
                         <div ui-grid="availableGridOptions" ui-grid-pagination class="grid" style="height: 500px;"></div>
@@ -48,9 +59,9 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-7">
+        <div class="col-lg-6">
             <div class="panel panel-default">
-                <div class="panel-heading">Loaded files <span ng-hide="!filesLoading"> {{filesLoading}} files loading... <span class="whirl line"></span> </span></div>
+                <div class="panel-heading">Loaded files <span class="pull-right" ng-hide="!filesLoading"> <span class="whirl line"></span> </span></div>
                 <div class="panel-body">
                     <div class="table-responsive">
                         <div ui-grid="loadedGridOptions" ui-grid-pagination class="grid" style="height: 500px;"></div>

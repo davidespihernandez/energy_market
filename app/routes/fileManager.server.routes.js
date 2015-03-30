@@ -17,6 +17,7 @@ module.exports = function(app) {
 		.get(users.requiresLogin, fileManager.listLoadedFiles);
     
 	app.route('/availablefiles')
-		.get(users.requiresLogin, fileManager.listAvailableFiles);
+		.get(users.requiresLogin, fileManager.listAvailableFiles)
+		.post(users.requiresLogin, fileManager.importAvailableFiles);
     
 };
