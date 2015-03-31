@@ -12,7 +12,7 @@ module.exports = function(app) {
 	app.route('/analysis')
 		.get(users.requiresLogin, analysis.search);
 
-	app.route('/analysis/locations')
-		.get(users.requiresLogin, analysis.distinctLocations);
+	app.route('/analysis/searchparams')
+		.get(users.requiresLogin, analysis.searchparams);
     
 };

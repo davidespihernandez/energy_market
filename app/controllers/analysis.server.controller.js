@@ -14,9 +14,7 @@ var mongoose = require('mongoose'),
  * List distinct locations
  */
 
-exports.distinctLocations = function (req, res){
-    console.log('Distinct locations for %j', req.query);
-    var market = req.query.market;
+function distinctLocations(market, done){
     var model = DayAheadData;
     if("RTBM"===market){
         console.log('Querying locations for real time');
@@ -28,9 +26,45 @@ exports.distinctLocations = function (req, res){
         locations.forEach(function(location){
             endLocations.push({value: location, label: location});
         });
-        res.json(endLocations);
+        done(endLocations);
     });        
+}
+
+/**
+ * Get maximum date
+ */
+
+function maximumDate(market, done){
+    MarketFile.aggregate()
+      .match({market: market})
+      .group({ _id: null, maxDate: { $max: '$date' } })
+      .exec(function (err, dates) {
+        if (err) return null;
+        console.log('Returned max date');
+        console.log(dates); // [ { maxDate: ... } ]
+        var date;
+        if(dates.length>0){
+            date = dates[0].maxDate;
+        }
+        done(date);
+    });    
+}
+
+/**
+ * Search page params
+ */
+exports.searchparams = function (req, res){
+    console.log('Search params for %j', req.query);
+    var market = req.query.market;
+    maximumDate(market, function(maxDate){
+        distinctLocations(market, function(locations){
+            console.log('returning search params');
+            res.json({maxDate: maxDate, locations: locations});
+        });
+    });
 };
+
+
 
 /**
  * Search day ahead data

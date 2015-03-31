@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('analysis').controller('AnalysisController', ['$scope', '$filter', '$timeout', '$stateParams', '$location', 'Authentication', 'AnalysisData', 'Locations',
-	function($scope, $filter, $timeout, $stateParams, $location, Authentication, AnalysisData, Locations) {
+angular.module('analysis').controller('AnalysisController', ['$scope', '$filter', '$timeout', '$stateParams', '$location', 'Authentication', 'AnalysisData', 'SearchParams',
+	function($scope, $filter, $timeout, $stateParams, $location, Authentication, AnalysisData, SearchParams) {
         
 		$scope.authentication = Authentication;
         $scope.availableMarkets = [{value: 'DA', label: 'Day Ahead'}, {value: 'RTBM', label: 'Real Time'}];
@@ -158,10 +158,18 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$filter'
             var dateFrom, dateTo;
             
             if($scope.dateFromInput){
-                dateFrom = new Date(Date.UTC($scope.dateFromInput.getFullYear(), $scope.dateFromInput.getMonth(), $scope.dateFromInput.getDate()));
+                var date = $scope.dateFromInput;
+                if(!(date instanceof Date)){
+                    date = new Date($scope.dateFromInput);
+                }
+                dateFrom = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
             }
             if($scope.dateToInput){
-                dateTo = new Date(Date.UTC($scope.dateToInput.getFullYear(), $scope.dateToInput.getMonth(), $scope.dateToInput.getDate()));
+                var date = $scope.dateToInput;
+                if(!(date instanceof Date)){
+                    date = new Date($scope.dateToInput);
+                }
+                dateTo = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
             }
             
             $scope.dataList = AnalysisData.query({market: $scope.comboboxes.selectedMarket.value, 
@@ -170,7 +178,7 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$filter'
                                                   dateTo: dateTo}, function(){
                 $scope.panelClass = "panel-body";
                 $scope.totalItems = $scope.dataList.length;
-                 $scope.gridOptions.data = $scope.dataList;
+                $scope.gridOptions.data = $scope.dataList;
                 //fill the graph data
                 $scope.fillGraphData();
             });
@@ -181,15 +189,18 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$filter'
             $scope.fillGraphData();
         };
 
-        $scope.fillLocations = function(callback){
-            console.log("searching locations for " + $scope.comboboxes.selectedMarket.value);
-            $scope.locations = Locations.query( { market: $scope.comboboxes.selectedMarket.value }, function(){
-                if($scope.locations.length>0){
+        $scope.getSearchParams = function(callback){
+            console.log("search params for " + $scope.comboboxes.selectedMarket.value);
+            SearchParams.get( { market: $scope.comboboxes.selectedMarket.value }, function(result){
+                console.log('result search params');
+                console.log(result);
+                if(result.locations.length>0){
+                    $scope.locations = result.locations;
+                    $scope.dateFromInput = result.maxDate;
+                    $scope.dateToInput = result.maxDate;
                     $scope.comboboxes.selectedLocations.push($scope.locations[0]);
-                    console.log('First location'); 
-                    console.log($scope.locations[0]);
+                    callback();                
                 }
-                callback();                
             });
         };
 
@@ -209,15 +220,15 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$filter'
 
         $scope.initPage = function(){
             $('.chosen-select').chosen();
-            $scope.fillLocations(function(){
+            $scope.getSearchParams(function(){
                 $scope.search();
             });
         };
 	}
 ]);
 
-angular.module('analysis').controller('TitleController', ['$scope', '$filter', '$timeout', '$stateParams', '$location', 'Authentication', 'AnalysisData', 'Locations',
-	function($scope, $filter, $timeout, $stateParams, $location, Authentication, AnalysisData, Locations) {
+angular.module('analysis').controller('TitleController', ['$scope', '$filter', '$timeout', '$stateParams', '$location', 'Authentication', 'AnalysisData',
+	function($scope, $filter, $timeout, $stateParams, $location, Authentication, AnalysisData) {
         $scope.marketName = 'Day Ahead';
         if($stateParams.market === 'RTBM'){
             $scope.marketName = 'Real Time';

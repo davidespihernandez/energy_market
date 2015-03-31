@@ -7,8 +7,8 @@ angular.module('analysis').factory('AnalysisData', ['$resource',
 	}
 ]);
 
-angular.module('analysis').factory('Locations', ['$resource',
+angular.module('analysis').factory('SearchParams', ['$resource',
 	function($resource) {
-		return $resource('/analysis/locations', { });
+		return $resource('/analysis/searchparams', { });
 	}
 ]);
