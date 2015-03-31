@@ -8,12 +8,12 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$filter'
         $scope.comboboxes = {};
         $scope.comboboxes.selectedLocations = [];
         $scope.comboboxes.selectedMarket = $scope.availableMarkets[0];
-        $scope.panelColor = 'panel panel-primary';
+        $scope.panelColor = 'panel-primary';
         $scope.marketName = 'Day Ahead';
         $scope.isDayAhead = true;
         if($stateParams.market === 'RTBM'){
             $scope.comboboxes.selectedMarket = $scope.availableMarkets[1];
-            $scope.panelColor = 'panel panel-warning';
+            $scope.panelColor = 'panel-warning';
             $scope.marketName = 'Real Time';
             $scope.isDayAhead = false;
         }

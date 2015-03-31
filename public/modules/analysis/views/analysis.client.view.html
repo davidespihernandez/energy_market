@@ -2,7 +2,7 @@
 <section data-ng-controller="AnalysisController" data-ng-init="initPage()">
     <div class="row">
         <div class="col-lg-12">
-            <div ng-class="panelColor">
+            <div ng-class="['panel', panelColor]">
                 <!-- Default panel contents -->
                 <div class="panel-heading">Data Review: Period and Location</div>
                 <div class="panel-body">
@@ -37,8 +37,9 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-lg-6">
-            <div ng-class="panelColor">
+        <!--need to use ng-if and duplicate, dynamic class causes grid not to render properly-->
+        <div ng-if="isDayAhead" class="col-lg-6">
+            <div class="panel panel-primary">
                 <div class="panel-heading"> 
                   Data 
                     <span class="pull-right">
@@ -52,8 +53,24 @@
                 </div>
             </div>            
         </div>
+        <div ng-if="!isDayAhead" class="col-lg-6">
+            <div class="panel panel-warning">
+                <div class="panel-heading"> 
+                  Data 
+                    <span class="pull-right">
+                      <a class="btn btn-default btn-xs" ng-csv="exportData()" filename="market_export.csv"> <em class="fa fa-download"></em> Excel ({{totalItems}} rows) </a>
+                    </span>
+                </div>
+                <div class="panel-body">
+                    <div class="table-responsive">
+                      <div ui-grid="gridOptions" ui-grid-pagination class="grid" style="height: 600px;"></div>
+                    </div>
+                </div>
+            </div>            
+        </div>
+        
         <div class="col-lg-6">
-            <div ng-class="panelColor">
+            <div ng-class="['panel', panelColor]">
                 <!-- Default panel contents -->
                 <div class="panel-heading">
                     Data Review: Visual Reference
