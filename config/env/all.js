@@ -23,7 +23,8 @@ module.exports = {
                  'public/lib/chosen_v1.2.0/chosen.min.css',
                  'public/lib/angular-ui-select/dist/select.css',
                  'public/lib/ui-grid/ui-grid.min.css',
-                 'public/lib/angular-bootstrap-nav-tree/dist/abn_tree.css'
+                 'public/lib/angular-bootstrap-nav-tree/dist/abn_tree.css',
+                 'public/lib/angularjs-toaster/toaster.min.css'
 			],
 			js: [
 				'public/lib/jquery/dist/jquery.js',
@@ -66,7 +67,8 @@ module.exports = {
                 'public/lib/ui-grid/ui-grid.min.js',
                 'public/lib/angular-bootstrap-nav-tree/dist/abn_tree_directive.js',
                 'public/lib/socket.io.js',
-                'public/lib/angular-socket-io/socket.min.js'
+                'public/lib/angular-socket-io/socket.min.js',
+                'public/lib/angularjs-toaster/toaster.min.js'
 				// 'public/lib/jquery/dist/jquery.js',
 				// 'public/lib/angular/angular.js',
 				// 'public/lib/angular-resource/angular-resource.js',

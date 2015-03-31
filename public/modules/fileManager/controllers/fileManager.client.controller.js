@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('filemanager').controller('FilemanagerController', ['$scope', '$stateParams', '$location', 'Authentication', 'Files', 'LoadedFiles', 'AvailableFiles', 'Socket',
-	function($scope, $stateParams, $location, Authentication, Files, LoadedFiles, AvailableFiles, Socket) {
+angular.module('filemanager').controller('FilemanagerController', ['$scope', '$stateParams', '$location', 'Authentication', 'Files', 'LoadedFiles', 'AvailableFiles', 'Socket', 'toaster',
+	function($scope, $stateParams, $location, Authentication, Files, LoadedFiles, AvailableFiles, Socket, toaster) {
 		$scope.authentication = Authentication;
 
         console.log("FileManagerController!");
@@ -13,6 +13,7 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
         $scope.fileLoadedList = [];
         $scope.fileAvailableList = [];
         $scope.filesLoading = 0;
+        $scope.loadFilesDisabled = true;
         
         $scope.availableMarkets = [{value: 'DA', label: 'Day Ahead'}, {value: 'RTBM', label: 'Real Time'}];
         $scope.comboboxes = {};
@@ -89,10 +90,10 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
             }
             
             $scope.fileAvailableList = AvailableFiles.query({dateFrom: dateFrom, dateTo: dateTo, market: $scope.comboboxes.selectedMarket.value}, function(response){
-                console.log('Finished list available files ');
                 $scope.availableGridOptions.data = $scope.fileAvailableList;
-                console.log('Response from availableFile');
-                console.log(response);
+                if($scope.fileAvailableList.length>0){
+                    $scope.loadFilesDisabled = false;
+                }
             });
         };
         
@@ -113,6 +114,8 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
                 dateTo = new Date(Date.UTC($scope.dateToInput.getFullYear(), $scope.dateToInput.getMonth(), $scope.dateToInput.getDate()));
             }
             console.log("Importing available files");
+            $scope.loadFilesDisabled = true;
+            toaster.pop('success', 'Load process', 'Launched load for ' + $scope.fileAvailableList.length + ' files');
             AvailableFiles.save({dateFrom: dateFrom, dateTo: dateTo, market: $scope.comboboxes.selectedMarket.value}, function(response){
                 console.log('Finished import available files ');
                 console.log(response);
@@ -125,13 +128,13 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
             if($scope.filesLoading<0){
                 $scope.filesLoading = 0;
             }
-            console.log(file);
+            toaster.pop('success', 'File loading finished', file.fileName);
             $scope.search();
         });
         
         Socket.on('file.import.start', function(file) {
             $scope.filesLoading++;
-            console.log(file);
+            toaster.pop('warning', 'File loading started', file.fileName);
         });
         
 	}

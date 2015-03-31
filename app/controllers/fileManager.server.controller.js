@@ -64,9 +64,11 @@ function fileNameInfo (fullPath){
     else if("RTBM" === marketCode){
         name = components[6];
         var day = components[5];
-        dateDate = Date.UTC(year, month-1, day);
         var dateTime= name.substring(name.lastIndexOf('-')+1, name.lastIndexOf('.')).substring(0,8);
-        time = dateTime.slice(-4);
+        //take the date from the file name, not the folder tree
+        //dateDate = Date.UTC(year, month-1, day);
+        dateDate = Date.UTC(dateTime.substring(0,4), dateTime.substring(4,6)-1, dateTime.substring(6,8));
+        time = name.substring(name.lastIndexOf('-')+1, name.lastIndexOf('.')).substring(8);
     }
     return {
         market: marketCode,
@@ -199,24 +201,19 @@ exports.importFile = function(req, res) {
                                     
 exports.listLoadedFiles = function(req, res) {
     var parameters = req.query;
-    console.log('Listing loaded files ' + req.query.toString());
+    console.log('Listing loaded files ');
     var query = MarketFile.find();
     if(parameters.dateFrom && parameters.dateFrom != "undefined" && parameters.dateFrom != "null"){
-        console.log('Date from ' + parameters.dateFrom);
         query = query.where('date').gte(parameters.dateFrom);
     }
     if(parameters.dateTo && parameters.dateTo != "undefined" && parameters.dateTo != "null"){
-        console.log('Date to ' + parameters.dateTo);
         query = query.where('date').lte(parameters.dateTo);
     }
     if(parameters.market && parameters.market != "undefined" && parameters.market != "null"){
-        console.log('Market ' + parameters.market);
         query = query.where('market').equals(parameters.market);
     }
-    console.log('performing query');
-    query.sort({ date: 'asc' }).exec(function (err, marketFiles) {
+    query.sort({ fileName: 'asc' }).exec(function (err, marketFiles) {
         if (err) return console.error(err);
-        console.log("Returning marketfiles");
         res.json(marketFiles);
     });
 };
@@ -234,7 +231,7 @@ function listPossibleDates(startDate, endDate, market){
     increments.RTBM = 5 * 60 * 1000;
     var endDateDate = new Date(endDate);
     while(tempDate.getTime()<=endDateDate.getTime()){
-        dates.push(tempDate);
+        dates.push(tempDate.getTime());
         tempDate = new Date(tempDate.getTime() + increments[market]);
     }
     return(dates);
@@ -254,7 +251,7 @@ function listExistingDates(startDate, endDate, market, done){
         if (err) return console.error(err);
         marketFiles.forEach(function(marketFile){
             if("DA" === market){
-                dates.push(marketFile.date);
+                dates.push(marketFile.date.getTime());
             } else if("RTBM" === market){
                 var newDate = Date.UTC(marketFile.date.getUTCFullYear(), marketFile.date.getUTCMonth(), marketFile.date.getUTCDate(),  marketFile.time.substring(0,2), marketFile.time.substring(2));
                 dates.push(newDate);
@@ -304,7 +301,7 @@ function difference(possibleDates, existingDates){
     for (var i = 0; i < possibleDates.length; i++) { 
         var exists = false;
         for (var j = 0; j < existingDates.length && exists === false; j++) { 
-            if(existingDates[j].getTime() === possibleDates[i].getTime()){
+            if(existingDates[j] === possibleDates[i]){
                 exists = true;
             }
         }
@@ -319,19 +316,11 @@ function getAvailableFiles(startDate, endDate, market, done){
     var possibleDates = listPossibleDates(startDate, endDate, market);
     var existingDates = listExistingDates(startDate, endDate, market, function(existingDates){
         var availableDates = difference(possibleDates, existingDates);
-        console.log('Possible dates');
-        console.log(possibleDates);
-        console.log('Existing dates');
-        console.log(existingDates);
-        console.log('Available dates');
-        console.log(availableDates);
         var availableFiles = [];
         availableDates.forEach(function(date){
-            var file = dateFileInfo(market, date);
+            var file = dateFileInfo(market, new Date(date));
             availableFiles.push(file);
         });
-        console.log('Returning available files');
-        console.log(availableFiles);
         done(availableFiles);
     });
 }
@@ -341,7 +330,6 @@ function getAvailableFiles(startDate, endDate, market, done){
 **/
 exports.listAvailableFiles = function(req, res) {
     console.log('listAvailableFiles');
-    console.log(req.query);
     getAvailableFiles(req.query.dateFrom, req.query.dateTo, req.query.market, function(availableFiles){
         res.json(availableFiles);
     });
@@ -414,18 +402,16 @@ function importSingleFile(c, file, socketio, done) {
     });
 }
 
+function delay(){ return Q.delay(1000); }
+
 //launches the import for the available files, for a market, start and end date
 exports.importAvailableFiles = function(req, res) {
     console.log('importAvailableFiles');
-    console.log(req.body);
     //connect to ftp server
     var c = new Client();
     c.on('ready', function() {
-        console.log('Connected for import');
         var socketio = req.app.get('socketio');
         getAvailableFiles(req.body.dateFrom, req.body.dateTo, req.body.market, function(availableFiles){
-            console.log('available files to import ');
-            console.log(availableFiles);
             var totalFiles = availableFiles.length;
             var imported = 0;
             var the_promises = [];
@@ -435,7 +421,6 @@ exports.importAvailableFiles = function(req, res) {
                 //import
                 importSingleFile(c, file, socketio, function(totalRows){
                     //the file import was finished
-                    console.log('file ' + file.fullPath + ' was imported');
                     imported++;
                     if(imported>=totalFiles){
                         c.end();
@@ -444,8 +429,8 @@ exports.importAvailableFiles = function(req, res) {
                     deferred.resolve(totalRows);
                 });
                 the_promises.push(deferred.promise);
+                the_promises.push(delay);
             });
-            console.log('After loop');
             return Q.all(the_promises);
         });    
     });

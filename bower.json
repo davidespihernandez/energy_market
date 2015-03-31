@@ -45,7 +45,8 @@
     "simple-line-icons": "0.1.1",
     "angular-chart.js": "~0.5.3",
     "eonasdan-bootstrap-datetimepicker": "~4.7.14",
-    "angular-socket-io": "~0.7.0"
+    "angular-socket-io": "~0.7.0",
+    "angularjs-toaster": "~0.4.11"
   },
   "resolutions": {
     "jquery": "2.1.1",

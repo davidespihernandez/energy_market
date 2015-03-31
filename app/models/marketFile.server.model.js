@@ -12,11 +12,11 @@ var mongoose = require('mongoose'),
 
 var MarketFileSchema = mongoose.Schema({
     filePath: {type: String, index: true},
-    fileName: {type: String, index: true},
+    fileName: {type: String},
     market: {type: String, index: true},
-    marketType: {type: String, index: true},
-    year: {type: Number, index: true},
-    month: {type: Number, index: true},
+    marketType: {type: String},
+    year: {type: Number},
+    month: {type: Number},
     date: {type: Date, index: true},
     time: {type: String}
 });
