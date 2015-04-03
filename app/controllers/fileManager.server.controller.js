@@ -423,7 +423,7 @@ exports.importAvailableFiles = function(req, res) {
                         promise_chain = promise_chain.then(importSingleFile(c, file, socketio));
                         console.log('launched import ' + file.fullPath);
                         imported++;
-                    };
+                    }
                 }
                 console.log('Finished import process');
 //                c.end();
