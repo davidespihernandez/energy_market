@@ -11,13 +11,10 @@ var mongoose = require('mongoose'),
  */
 
 var RealTimeDataSchema = mongoose.Schema({
-    marketFile: {type: mongoose.Schema.Types.ObjectId, ref: 'MarketFile'},
-    market: {type: String, index: true},
+    market: {type: String},
     marketType: {type: String},
-    year: {type: Number},
-    month: {type: Number},
     date: {type: Date, index: true},
-    Interval: {type: Date, index: true},
+    Interval: {type: Date},
     GMTIntervalEnd: {type: Date},
     Settlement_Location: {type: String, index: true},
     Pnode: {type: String},

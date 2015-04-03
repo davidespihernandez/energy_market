@@ -25,7 +25,6 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
             paginationPageSize: 15,
             enableSorting: true,
             columnDefs: [
-                { field: 'market', name: 'Market', width: '80' },
                 { field: 'fileName', name: 'Name' },
                 { field: 'date', name: 'Date', width: '120', cellFilter: "date:'MMMM dd, yyyy':'UTC'"}
             ]
@@ -36,23 +35,33 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
             paginationPageSize: 30,
             enableSorting: true,
             columnDefs: [
-                { field: 'year', name: 'Year', width: '80' },
-                { field: 'month', name: 'Month', width: '100' },
-                { field: 'date', name: 'Date', width: '120', cellFilter: "date:'MMMM dd, yyyy':'UTC'"},
-                { field: 'fileName', name: 'Name'}
+                { field: 'fileName', name: 'Name'},
+                { field: 'date', name: 'Date', width: '120', cellFilter: "date:'MMMM dd, yyyy':'UTC'"}
             ]
         };
 
-        $scope.openFrom = function($event) {
+        $scope.openAvailableFrom = function($event) {
             $event.preventDefault();
             $event.stopPropagation();
-            $scope.openedFrom = true;
+            $scope.openedAvailableFrom = true;
         };
 
-        $scope.openTo = function($event) {
+        $scope.openAvailableTo = function($event) {
             $event.preventDefault();
             $event.stopPropagation();
-            $scope.openedTo = true;
+            $scope.openedAvailableTo = true;
+        };
+        
+        $scope.openLoadedFrom = function($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
+            $scope.openedLoadedFrom = true;
+        };
+
+        $scope.openLoadedTo = function($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
+            $scope.openedLoadedTo = true;
         };
 
         $scope.listLoadedFiles = function(){
@@ -60,11 +69,11 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
             $scope.fileLoadedList = [];
             var dateFrom, dateTo;
             
-            if($scope.dateFromInput){
-                dateFrom = new Date(Date.UTC($scope.dateFromInput.getFullYear(), $scope.dateFromInput.getMonth(), $scope.dateFromInput.getDate()));
+            if($scope.dateFromLoadedInput){
+                dateFrom = new Date(Date.UTC($scope.dateFromLoadedInput.getFullYear(), $scope.dateFromLoadedInput.getMonth(), $scope.dateFromLoadedInput.getDate()));
             }
-            if($scope.dateToInput){
-                dateTo = new Date(Date.UTC($scope.dateToInput.getFullYear(), $scope.dateToInput.getMonth(), $scope.dateToInput.getDate()));
+            if($scope.dateToLoadedInput){
+                dateTo = new Date(Date.UTC($scope.dateToLoadedInput.getFullYear(), $scope.dateToLoadedInput.getMonth(), $scope.dateToLoadedInput.getDate()));
             }
             
             $scope.fileLoadedList = LoadedFiles.query({dateFrom: dateFrom, dateTo: dateTo, market: $scope.comboboxes.selectedMarket.value}, function(){
@@ -74,7 +83,7 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
         };
 
         $scope.initPage = function(){
-            
+            $scope.listLoadedFiles();
         };
         
         $scope.listAvailableFiles = function(){
@@ -82,11 +91,11 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
             $scope.fileAvailableList = [];
             var dateFrom, dateTo;
             
-            if($scope.dateFromInput){
-                dateFrom = new Date(Date.UTC($scope.dateFromInput.getFullYear(), $scope.dateFromInput.getMonth(), $scope.dateFromInput.getDate()));
+            if($scope.dateFromAvailableInput){
+                dateFrom = new Date(Date.UTC($scope.dateFromAvailableInput.getFullYear(), $scope.dateFromAvailableInput.getMonth(), $scope.dateFromAvailableInput.getDate()));
             }
-            if($scope.dateToInput){
-                dateTo = new Date(Date.UTC($scope.dateToInput.getFullYear(), $scope.dateToInput.getMonth(), $scope.dateToInput.getDate()));
+            if($scope.dateToAvailableInput){
+                dateTo = new Date(Date.UTC($scope.dateToAvailableInput.getFullYear(), $scope.dateToAvailableInput.getMonth(), $scope.dateToAvailableInput.getDate()));
             }
             
             $scope.fileAvailableList = AvailableFiles.query({dateFrom: dateFrom, dateTo: dateTo, market: $scope.comboboxes.selectedMarket.value}, function(response){
@@ -104,14 +113,24 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
             $scope.listAvailableFiles();
         };
         
+        $scope.searchAvailable = function(){
+            //list also available files
+            $scope.listAvailableFiles();
+        };
+        
+        $scope.searchLoaded = function(){
+            //list loaded files
+            $scope.listLoadedFiles();
+        };
+        
         $scope.importAvailableFiles = function(){
             var dateFrom, dateTo;
             
-            if($scope.dateFromInput){
-                dateFrom = new Date(Date.UTC($scope.dateFromInput.getFullYear(), $scope.dateFromInput.getMonth(), $scope.dateFromInput.getDate()));
+            if($scope.dateFromAvailableInput){
+                dateFrom = new Date(Date.UTC($scope.dateFromAvailableInput.getFullYear(), $scope.dateFromAvailableInput.getMonth(), $scope.dateFromAvailableInput.getDate()));
             }
-            if($scope.dateToInput){
-                dateTo = new Date(Date.UTC($scope.dateToInput.getFullYear(), $scope.dateToInput.getMonth(), $scope.dateToInput.getDate()));
+            if($scope.dateToAvailableInput){
+                dateTo = new Date(Date.UTC($scope.dateToAvailableInput.getFullYear(), $scope.dateToAvailableInput.getMonth(), $scope.dateToAvailableInput.getDate()));
             }
             console.log("Importing available files");
             $scope.loadFilesDisabled = true;

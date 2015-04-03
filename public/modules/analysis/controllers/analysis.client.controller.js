@@ -156,16 +156,16 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$filter'
             console.log("Searching ");
             $scope.panelClass = "panel-body whirl standard";
             var dateFrom, dateTo;
-            
+            var date;
             if($scope.dateFromInput){
-                var date = $scope.dateFromInput;
+                date = $scope.dateFromInput;
                 if(!(date instanceof Date)){
                     date = new Date($scope.dateFromInput);
                 }
                 dateFrom = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
             }
             if($scope.dateToInput){
-                var date = $scope.dateToInput;
+                date = $scope.dateToInput;
                 if(!(date instanceof Date)){
                     date = new Date($scope.dateToInput);
                 }

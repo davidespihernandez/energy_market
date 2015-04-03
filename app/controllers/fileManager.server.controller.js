@@ -146,17 +146,14 @@ exports.importFile = function(req, res) {
                         if(fields.length>1){
                             var dateFrom = fields[0].substring(6,10) + "-" + fields[0].substring(0,2) + "-" + fields[0].substring(3,5) + "T" + fields[0].substring(11) + "Z";
                             var dateTo = fields[1].substring(6,10) + "-" + fields[1].substring(0,2) + "-" + fields[1].substring(3,5) + "T" + fields[1].substring(11) + "Z";
-                            var measureType = DayAheadData;
+                            var MeasureType = DayAheadData;
                             if("RTBM" === marketFileDoc.market){
-                                measureType = RealTimeData;
+                                MeasureType = RealTimeData;
                             }
                                 
-                            var measureDoc = new measureType({
-                                marketFile : marketFileDoc, 
+                            var measureDoc = new MeasureType({
                                 market: marketFileDoc.market,
                                 marketType: marketFileDoc.marketType,
-                                year: marketFileDoc.year,
-                                month: marketFileDoc.month,
                                 date: marketFileDoc.date,
                                 Interval: dateFrom,
                                 GMTIntervalEnd: dateTo,
@@ -339,7 +336,8 @@ exports.listAvailableFiles = function(req, res) {
  * Imports a single, each of them an object containing 'fullPath' field at least
 **/
 
-function importSingleFile(c, file, socketio, done) {
+function importSingleFile(c, file, socketio) {
+    var deferred = Q.defer();
     var filePath = file.fullPath;
     //download a file
     var fileData = "";
@@ -374,8 +372,6 @@ function importSingleFile(c, file, socketio, done) {
                             marketFile : marketFileDoc, 
                             market: marketFileDoc.market,
                             marketType: marketFileDoc.marketType,
-                            year: marketFileDoc.year,
-                            month: marketFileDoc.month,
                             date: marketFileDoc.date,
                             Interval: dateFrom,
                             GMTIntervalEnd: dateTo,
@@ -395,11 +391,13 @@ function importSingleFile(c, file, socketio, done) {
 
                 }
                 console.log('Inserted ' + lines.length + 'for  ' + filePath);
-                done(lines.length);
+                socketio.sockets.emit('file.import.end', file);
+                deferred.resolve(lines.length);
             });
         });
 
     });
+    return deferred.promise;
 }
 
 function delay(){ return Q.delay(1000); }
@@ -410,29 +408,34 @@ exports.importAvailableFiles = function(req, res) {
     //connect to ftp server
     var c = new Client();
     c.on('ready', function() {
-        var socketio = req.app.get('socketio');
-        getAvailableFiles(req.body.dateFrom, req.body.dateTo, req.body.market, function(availableFiles){
-            var totalFiles = availableFiles.length;
-            var imported = 0;
-            var the_promises = [];
-            availableFiles.forEach(function(file){
-                console.log('Calling to import ' + file.fullPath);
-                var deferred = Q.defer();
-                //import
-                importSingleFile(c, file, socketio, function(totalRows){
-                    //the file import was finished
-                    imported++;
-                    if(imported>=totalFiles){
-                        c.end();
-                    }
-                    socketio.sockets.emit('file.import.end', file);
-                    deferred.resolve(totalRows);
-                });
-                the_promises.push(deferred.promise);
-                the_promises.push(delay);
-            });
-            return Q.all(the_promises);
-        });    
+        try{
+            var socketio = req.app.get('socketio');
+            getAvailableFiles(req.body.dateFrom, req.body.dateTo, req.body.market, function(availableFiles){
+                var totalFiles = availableFiles.length;
+                var imported = 0;
+                var arrayLength = availableFiles.length;
+                if(availableFiles.length>0){
+                    var promise_chain = importSingleFile(c, availableFiles[0], socketio);
+                    console.log('Launched initial ' + availableFiles[0].fullPath);
+                    for (var i = 1; i < arrayLength; i++) {
+                        var file = availableFiles[i];
+                        console.log('Calling to import ' + file.fullPath);
+                        promise_chain = promise_chain.then(importSingleFile(c, file, socketio));
+                        console.log('launched import ' + file.fullPath);
+                        imported++;
+                    };
+                }
+                console.log('Finished import process');
+//                c.end();
+                res.json({totalFiles: imported});
+            });    
+        }
+        catch(err){
+            console.error('Error processing available files');
+            res.status(400).send({
+                    message: errorHandler.getErrorMessage(err)});
+        }
+        
     });
 
     try{
