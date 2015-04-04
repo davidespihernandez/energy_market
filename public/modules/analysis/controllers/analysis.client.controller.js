@@ -74,6 +74,37 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$filter'
             ]
         };
         
+        $scope.averagesGridOptions = {
+            paginationPageSizes: [10, 20, 30],
+            paginationPageSize: 10,
+            enableSorting: true,
+            columnDefs: [
+                { field: 'Interval', name: 'Date', width: '120', cellFilter: "date:'MM/dd/yyyy':'UTC'" },
+                { field: 'Settlement_Location', name: 'Location' },
+                { field: 'LMP', name: 'LMP', width: '80',
+                 headerCellClass: function(grid, row, col, rowRenderIndex, colRenderIndex) {
+                                        return 'text-uppercase';
+                                    }
+                },
+                { field: 'MLC', name: 'MLC', width: '80',
+                 headerCellClass: function(grid, row, col, rowRenderIndex, colRenderIndex) {
+                                        return 'text-uppercase';
+                                    }
+                },
+                { field: 'MCC', name: 'MCC', width: '80',
+                 headerCellClass: function(grid, row, col, rowRenderIndex, colRenderIndex) {
+                                        return 'text-uppercase';
+                                    }
+                },
+                { field: 'MEC', name: 'MEC', width: '80',
+                 headerCellClass: function(grid, row, col, rowRenderIndex, colRenderIndex) {
+                                        return 'text-uppercase';
+                                    }
+                }
+            ]
+        };
+        
+        
         $scope.onClick = function (points, evt) {
             console.log(points, evt);
         };
@@ -100,13 +131,13 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$filter'
             var newSeries = [];
             var newLabels = [];
             var newData = {};
+            var averagesData = {};
             var avgLMP = 0, avgMLC = 0, avgMCC = 0, avgMEC = 0;
             var measures = [serie];
             if(serie === "ALL"){
                 measures = ["LMP", "MLC", "MCC", "MEC"];
             }
             $scope.dataList.forEach(function(item){
-                
                 if(newLabels.indexOf($filter('date')(item.Interval, 'MM/dd/yyyy HH:mm', 'UTC'))===-1){
                     newLabels.push($filter('date')(item.Interval, 'MM/dd/yyyy HH:mm', 'UTC'));
                 }
@@ -120,11 +151,49 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$filter'
                     newData[seriesLabel].push(item[measure]);
                 });
                 avgLMP += item.LMP; avgMLC += item.MLC; avgMCC += item.MCC; avgMEC += item.MEC;
+                //store data for averages per location and date
+                var averageKey = $filter('date')(item.date, 'MM/dd/yyyy', 'UTC') + "_" + item.Settlement_Location;
+                var avgData
+                if(averagesData.hasOwnProperty(averageKey)){
+                    avgData = averagesData[averageKey];
+                    avgData.LMP += item.LMP;
+                    avgData.MLC += item.MLC;
+                    avgData.MCC += item.MCC;
+                    avgData.MEC += item.MEC;
+                    avgData.rows++;
+                    averagesData[averageKey] = avgData;
+                } else{
+                    avgData = { Interval: $filter('date')(item.date, 'MM/dd/yyyy', 'UTC'),
+                                    Settlement_Location: item.Settlement_Location,
+                                    LMP: item.LMP,
+                                    MLC: item.MLC,
+                                    MCC: item.MCC,
+                                    MEC: item.MEC,
+                                    rows: 1
+                                  };
+                    averagesData[averageKey] = avgData;
+                }
             });
             $scope.averageLMP = (avgLMP / $scope.dataList.length).toFixed(2); 
             $scope.averageMLC = (avgMLC / $scope.dataList.length).toFixed(2); 
             $scope.averageMCC = (avgMCC / $scope.dataList.length).toFixed(2); 
             $scope.averageMEC = (avgMEC / $scope.dataList.length).toFixed(2); 
+            var averagesGridData = [];
+            console.log('Averages data before');
+            console.log(averagesData);
+            for (var prop in averagesData) {
+                if (averagesData.hasOwnProperty(prop)) {
+                    averagesData[prop].LMP = (averagesData[prop].LMP / averagesData[prop].rows).toFixed(2);
+                    averagesData[prop].MLC = (averagesData[prop].MLC / averagesData[prop].rows).toFixed(2);
+                    averagesData[prop].MCC = (averagesData[prop].MCC / averagesData[prop].rows).toFixed(2);
+                    averagesData[prop].MEC = (averagesData[prop].MEC / averagesData[prop].rows).toFixed(2);
+                    averagesGridData.push(averagesData[prop]);
+                }
+            }
+            console.log('Setting averages data');
+            console.log(averagesGridData);
+            $scope.averagesGridOptions.data = averagesGridData;
+            
             //put all the series data
             for (var property in newData) {
                 if (newData.hasOwnProperty(property)) {
