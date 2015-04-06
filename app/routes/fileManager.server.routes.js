@@ -20,4 +20,7 @@ module.exports = function(app) {
 		.get(users.requiresLogin, fileManager.listAvailableFiles)
 		.post(users.requiresLogin, fileManager.importAvailableFiles);
     
+	app.route('/uploadERCOT')
+		.post(users.requiresLogin, fileManager.uploadERCOT);
+    
 };

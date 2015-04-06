@@ -309,7 +309,7 @@ function difference(possibleDates, existingDates){
     return(endDates);
 }
 
-function getAvailableFiles(startDate, endDate, market, done){
+function getSPPAvailableFiles(startDate, endDate, market, done){
     var possibleDates = listPossibleDates(startDate, endDate, market);
     var existingDates = listExistingDates(startDate, endDate, market, function(existingDates){
         var availableDates = difference(possibleDates, existingDates);
@@ -322,14 +322,19 @@ function getAvailableFiles(startDate, endDate, market, done){
     });
 }
 
+
 /**
  * Lists all files that are available for loading
 **/
 exports.listAvailableFiles = function(req, res) {
     console.log('listAvailableFiles');
-    getAvailableFiles(req.query.dateFrom, req.query.dateTo, req.query.market, function(availableFiles){
-        res.json(availableFiles);
-    });
+    var market = req.query.market;
+    if('DA' === market || 'RTBM' === market){
+        getSPPAvailableFiles(req.query.dateFrom, req.query.dateTo, req.query.market, function(availableFiles){
+            res.json(availableFiles);
+        });
+    } 
+    
 };
 
 /**
@@ -410,36 +415,56 @@ function importSingleFile(c, index, filesArray, socketio) {
 //launches the import for the available files, for a market, start and end date
 exports.importAvailableFiles = function(req, res) {
     console.log('importAvailableFiles');
-    //connect to ftp server
-    var c = new Client();
-    c.on('ready', function() {
+    var market = req.body.market;
+    
+    if('DA' === market || 'RTBM' === market){
+        //SPP
+        //connect to ftp server
+        var c = new Client();
+        c.on('ready', function() {
+            try{
+                var socketio = req.app.get('socketio');
+                getSPPAvailableFiles(req.body.dateFrom, req.body.dateTo, req.body.market, function(availableFiles){
+                    var arrayLength = availableFiles.length;
+                    if(availableFiles.length>0){
+                        importSingleFile(c, 0, availableFiles, socketio);
+                    }
+                    console.log('Finished launching process');
+    //                c.end();
+                    res.json({totalFiles: arrayLength});
+                });    
+            }
+            catch(err){
+                console.error('Error processing available files');
+                res.status(400).send({
+                        message: errorHandler.getErrorMessage(err)});
+            }
+
+        });
+
         try{
-            var socketio = req.app.get('socketio');
-            getAvailableFiles(req.body.dateFrom, req.body.dateTo, req.body.market, function(availableFiles){
-                var arrayLength = availableFiles.length;
-                if(availableFiles.length>0){
-                    importSingleFile(c, 0, availableFiles, socketio);
-                }
-                console.log('Finished launching process');
-//                c.end();
-                res.json({totalFiles: arrayLength});
-            });    
+            c.connect({host: 'pubftp.spp.org'});
         }
         catch(err){
-            console.error('Error processing available files');
+            console.error('Error connecting to FTP');
             res.status(400).send({
                     message: errorHandler.getErrorMessage(err)});
         }
-        
-    });
+    } else if('ERCOT_DA' === market || 'ERCOT_RTBM' === market){
+        //TODO: import available files from ERCOT
+        console.log('importing ERCOT files');
+    }
+    
+};
 
-    try{
-        c.connect({host: 'pubftp.spp.org'});
-    }
-    catch(err){
-        console.error('Error connecting to FTP');
-        res.status(400).send({
-				message: errorHandler.getErrorMessage(err)});
-    }
+
+/**
+ * Upload ERCOT files
+**/
+                                    
+exports.uploadERCOT = function(req, res) {
+    console.log('Upload ERCOT ');
+    console.log(req.files);
+    res.json({loaded: true});
 };
 

@@ -25,7 +25,8 @@ var ApplicationConfiguration = (function() {
                                                'ui.grid.pagination',
                                                'angularBootstrapNavTree',
                                                'btford.socket-io',
-                                               'toaster'];
+                                               'toaster',
+                                               'angularFileUpload'];
     
 	// Add a new vertical module
 	var registerModule = function(moduleName, dependencies) {

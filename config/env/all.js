@@ -68,7 +68,8 @@ module.exports = {
                 'public/lib/angular-bootstrap-nav-tree/dist/abn_tree_directive.js',
                 'public/lib/socket.io.js',
                 'public/lib/angular-socket-io/socket.min.js',
-                'public/lib/angularjs-toaster/toaster.min.js'
+                'public/lib/angularjs-toaster/toaster.min.js',
+                'public/lib/angular-file-upload/angular-file-upload.js'
 				// 'public/lib/jquery/dist/jquery.js',
 				// 'public/lib/angular/angular.js',
 				// 'public/lib/angular-resource/angular-resource.js',

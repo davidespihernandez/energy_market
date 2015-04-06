@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('filemanager').controller('FilemanagerController', ['$scope', '$stateParams', '$location', 'Authentication', 'Files', 'LoadedFiles', 'AvailableFiles', 'Socket', 'toaster',
-	function($scope, $stateParams, $location, Authentication, Files, LoadedFiles, AvailableFiles, Socket, toaster) {
+angular.module('filemanager').controller('FilemanagerController', ['$scope', '$stateParams', '$location', 'Authentication', 'LoadedFiles', 'AvailableFiles', 'Socket', 'toaster',
+	function($scope, $stateParams, $location, Authentication, LoadedFiles, AvailableFiles, Socket, toaster) {
 		$scope.authentication = Authentication;
 
         console.log("FileManagerController!");
