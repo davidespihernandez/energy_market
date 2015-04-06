@@ -336,71 +336,76 @@ exports.listAvailableFiles = function(req, res) {
  * Imports a single, each of them an object containing 'fullPath' field at least
 **/
 
-function importSingleFile(c, file, socketio) {
-    var deferred = Q.defer();
+function importSingleFile(c, index, filesArray, socketio) {
+    var file = filesArray[index];
     var filePath = file.fullPath;
     //download a file
     var fileData = "";
     var mkt = null;
-    c.get(filePath, function(err, stream) {
-        //ftp://pubftp.spp.org/Markets/DA/LMP_By_SETTLEMENT_LOC/2015/03/DA-LMP-SL-201503010100.csv
-        if (err) return console.error(err);
+    try{
+        c.get(filePath, function(err, stream) {
+            //ftp://pubftp.spp.org/Markets/DA/LMP_By_SETTLEMENT_LOC/2015/03/DA-LMP-SL-201503010100.csv
+            if (err) return console.error(err);
 
-        socketio.sockets.emit('file.import.start', file);
+            socketio.sockets.emit('file.import.start', file);
 
-        var fileContents = '';
-        stream.on('data',function(buffer){
-            fileContents += buffer;
-//                console.log('on readable data ' + buffer);
-        }); 
+            var fileContents = '';
+            stream.on('data',function(buffer){
+                fileContents += buffer;
+    //                console.log('on readable data ' + buffer);
+            }); 
 
-        stream.on('end',function(){
-            var lines = fileContents.split("\n");
-            getMarketFile(filePath, function(marketFileDoc){
-                //insert Data
-                for (var i = 1, len = lines.length; i < len; i++) {
-                    var fields = lines[i].split(',');
-                    if(fields.length>1){
-                        var dateFrom = fields[0].substring(6,10) + "-" + fields[0].substring(0,2) + "-" + fields[0].substring(3,5) + "T" + fields[0].substring(11) + "Z";
-                        var dateTo = fields[1].substring(6,10) + "-" + fields[1].substring(0,2) + "-" + fields[1].substring(3,5) + "T" + fields[1].substring(11) + "Z";
-                        var MeasureType = DayAheadData;
-                        if("RTBM" === marketFileDoc.market){
-                            MeasureType = RealTimeData;
+            stream.on('end',function(){
+                var lines = fileContents.split("\n");
+                getMarketFile(filePath, function(marketFileDoc){
+                    //insert Data
+                    for (var i = 1, len = lines.length; i < len; i++) {
+                        var fields = lines[i].split(',');
+                        if(fields.length>1){
+                            var dateFrom = fields[0].substring(6,10) + "-" + fields[0].substring(0,2) + "-" + fields[0].substring(3,5) + "T" + fields[0].substring(11) + "Z";
+                            var dateTo = fields[1].substring(6,10) + "-" + fields[1].substring(0,2) + "-" + fields[1].substring(3,5) + "T" + fields[1].substring(11) + "Z";
+                            var MeasureType = DayAheadData;
+                            if("RTBM" === marketFileDoc.market){
+                                MeasureType = RealTimeData;
+                            }
+
+                            var measureDoc = new MeasureType({
+                                marketFile : marketFileDoc, 
+                                market: marketFileDoc.market,
+                                marketType: marketFileDoc.marketType,
+                                date: marketFileDoc.date,
+                                Interval: dateFrom,
+                                GMTIntervalEnd: dateTo,
+                                Settlement_Location: fields[2],
+                                Pnode: fields[3],
+                                LMP: fields[4],
+                                MLC: fields[5],
+                                MCC: fields[6],
+                                MEC: fields[7]
+                            });
+
+                            measureDoc.save(function (err, mDoc) {
+                              if (err) return console.error(err);
+                            });
+
                         }
 
-                        var measureDoc = new MeasureType({
-                            marketFile : marketFileDoc, 
-                            market: marketFileDoc.market,
-                            marketType: marketFileDoc.marketType,
-                            date: marketFileDoc.date,
-                            Interval: dateFrom,
-                            GMTIntervalEnd: dateTo,
-                            Settlement_Location: fields[2],
-                            Pnode: fields[3],
-                            LMP: fields[4],
-                            MLC: fields[5],
-                            MCC: fields[6],
-                            MEC: fields[7]
-                        });
-
-                        measureDoc.save(function (err, mDoc) {
-                          if (err) return console.error(err);
-                        });
-
                     }
-
-                }
-                console.log('Inserted ' + lines.length + 'for  ' + filePath);
-                socketio.sockets.emit('file.import.end', file);
-                deferred.resolve(lines.length);
+                    console.log('Inserted ' + lines.length + 'for  ' + filePath);
+                    socketio.sockets.emit('file.import.end', file);
+                    //launch the next file import
+                    if(index+1<filesArray.length){
+                        importSingleFile(c, index+1, filesArray, socketio);
+                    }
+                });
             });
-        });
 
-    });
-    return deferred.promise;
+        });        
+    }
+    catch(err){
+        console.error('Error processing available files');
+    }
 }
-
-function delay(){ return Q.delay(1000); }
 
 //launches the import for the available files, for a market, start and end date
 exports.importAvailableFiles = function(req, res) {
@@ -411,23 +416,13 @@ exports.importAvailableFiles = function(req, res) {
         try{
             var socketio = req.app.get('socketio');
             getAvailableFiles(req.body.dateFrom, req.body.dateTo, req.body.market, function(availableFiles){
-                var totalFiles = availableFiles.length;
-                var imported = 0;
                 var arrayLength = availableFiles.length;
                 if(availableFiles.length>0){
-                    var promise_chain = importSingleFile(c, availableFiles[0], socketio);
-                    console.log('Launched initial ' + availableFiles[0].fullPath);
-                    for (var i = 1; i < arrayLength; i++) {
-                        var file = availableFiles[i];
-                        console.log('Calling to import ' + file.fullPath);
-                        promise_chain = promise_chain.then(importSingleFile(c, file, socketio));
-                        console.log('launched import ' + file.fullPath);
-                        imported++;
-                    }
+                    importSingleFile(c, 0, availableFiles, socketio);
                 }
-                console.log('Finished import process');
+                console.log('Finished launching process');
 //                c.end();
-                res.json({totalFiles: imported});
+                res.json({totalFiles: arrayLength});
             });    
         }
         catch(err){

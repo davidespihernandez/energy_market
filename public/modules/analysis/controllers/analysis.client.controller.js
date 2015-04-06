@@ -153,7 +153,7 @@ angular.module('analysis').controller('AnalysisController', ['$scope', '$filter'
                 avgLMP += item.LMP; avgMLC += item.MLC; avgMCC += item.MCC; avgMEC += item.MEC;
                 //store data for averages per location and date
                 var averageKey = $filter('date')(item.date, 'MM/dd/yyyy', 'UTC') + "_" + item.Settlement_Location;
-                var avgData
+                var avgData;
                 if(averagesData.hasOwnProperty(averageKey)){
                     avgData = averagesData[averageKey];
                     avgData.LMP += item.LMP;
