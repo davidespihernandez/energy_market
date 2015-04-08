@@ -22,12 +22,19 @@ var fs = require('fs'),
 	config = require('./config'),
 	consolidate = require('consolidate'),
 	path = require('path'),
+    multer  = require('multer'),
     socketio = require('socket.io');
 
 module.exports = function(db) {
 	// Initialize express app
 	var app = express();
 
+    //using multer for file uploads
+    app.use(multer({
+        dest: './uploads/',
+        inMemory: true //This is important. It's what populates the buffer.
+    })); 
+    
 	// Globbing model files
 	config.getGlobbedFiles('./app/models/**/*.js').forEach(function(modelPath) {
 		require(path.resolve(modelPath));

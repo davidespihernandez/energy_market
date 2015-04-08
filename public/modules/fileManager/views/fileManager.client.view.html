@@ -8,7 +8,7 @@
                 <div class="panel-heading">Market</div>
                 <div class="panel-body">
                       <div class="form-group">
-                        <ui-select style="width: 175px" ng-model="comboboxes.selectedMarket" theme="bootstrap" ng-disabled="disabled">
+                        <ui-select style="width: 175px" ng-model="comboboxes.selectedMarket" theme="bootstrap" ng-change="marketChange()" ng-disabled="disabled">
                            <ui-select-match placeholder="Market...">{{$select.selected.label}}</ui-select-match>
                            <ui-select-choices repeat="market in availableMarkets | filter: $select.search">
                               <span ng-bind-html="market.label | highlight: $select.search"></span>

@@ -9,8 +9,9 @@ angular.module('filemanager').controller('FilemanagerERCOTController', ['$scope'
         $scope.filesPanelClass = "panel-body";
 
         $scope.fileLoadedList = [];
-        $scope.filesLoading = 0;
+        $scope.filesLoading = [];
         $scope.loadFilesDisabled = true;
+        
         
         $scope.availableMarkets = [{value: 'ERCOT_DA', label: 'Day Ahead'}, {value: 'ERCOT_RTBM', label: 'Real Time'}];
         $scope.comboboxes = {};
@@ -72,18 +73,31 @@ angular.module('filemanager').controller('FilemanagerERCOTController', ['$scope'
         };
         
         //socket.io
-        Socket.on('file.import.end', function(file) {
-            $scope.filesLoading--;
-            if($scope.filesLoading<0){
-                $scope.filesLoading = 0;
-            }
-            toaster.pop('success', 'File loading finished', file.fileName);
+        Socket.on('file.importERCOT.end', function(file) {
+            toaster.pop('success', 'File loading finished', file.filePath);
             $scope.search();
         });
         
-        Socket.on('file.import.start', function(file) {
-            $scope.filesLoading++;
-            toaster.pop('warning', 'File loading started', file.fileName);
+        Socket.on('file.importERCOT.start', function(file) {
+            toaster.pop('warning', 'File loading started', file.filePath);
+        });
+        
+        Socket.on('file.importERCOT.progress', function(file) {
+            var existingFileIndex = -1;
+            for(var i = 0; i < $scope.filesLoading.length; i++) {
+                if($scope.filesLoading[i].filePath === file.filePath){
+                    existingFileIndex = i;
+                }
+            }
+            if(existingFileIndex > -1){
+                $scope.filesLoading[existingFileIndex] = file;
+                if(file.percent === 100){
+                    $scope.filesLoading.splice(existingFileIndex, 1);
+                    $scope.search();
+                }
+            } else{
+                $scope.filesLoading.push(file);
+            }
         });
         
         //UPLOADER        
@@ -91,43 +105,42 @@ angular.module('filemanager').controller('FilemanagerERCOTController', ['$scope'
             url: 'uploadERCOT'
         });
 
-        // CALLBACKS
+        // CALLBACKS for uploader
 
         uploader.onWhenAddingFileFailed = function(item /*{File|FileLikeObject}*/, filter, options) {
-            console.info('onWhenAddingFileFailed', item, filter, options);
+            //console.info('onWhenAddingFileFailed', item, filter, options);
         };
         uploader.onAfterAddingFile = function(fileItem) {
-            console.info('onAfterAddingFile', fileItem);
+            //console.info('onAfterAddingFile', fileItem);
         };
         uploader.onAfterAddingAll = function(addedFileItems) {
-            console.info('onAfterAddingAll', addedFileItems);
+            //console.info('onAfterAddingAll', addedFileItems);
         };
         uploader.onBeforeUploadItem = function(item) {
-            console.info('onBeforeUploadItem', item);
+            //console.info('onBeforeUploadItem', item);
         };
         uploader.onProgressItem = function(fileItem, progress) {
-            console.info('onProgressItem', fileItem, progress);
+            //console.info('onProgressItem', fileItem, progress);
         };
         uploader.onProgressAll = function(progress) {
-            console.info('onProgressAll', progress);
+            //console.info('onProgressAll', progress);
         };
         uploader.onSuccessItem = function(fileItem, response, status, headers) {
-            console.info('onSuccessItem', fileItem, response, status, headers);
+            //console.info('onSuccessItem', fileItem, response, status, headers);
         };
         uploader.onErrorItem = function(fileItem, response, status, headers) {
-            console.info('onErrorItem', fileItem, response, status, headers);
+            //console.info('onErrorItem', fileItem, response, status, headers);
         };
         uploader.onCancelItem = function(fileItem, response, status, headers) {
-            console.info('onCancelItem', fileItem, response, status, headers);
+            //console.info('onCancelItem', fileItem, response, status, headers);
         };
         uploader.onCompleteItem = function(fileItem, response, status, headers) {
-            console.info('onCompleteItem', fileItem, response, status, headers);
+            //console.info('onCompleteItem', fileItem, response, status, headers);
         };
         uploader.onCompleteAll = function() {
             console.info('onCompleteAll');
+            uploader.clearQueue();
         };
-
-        console.info('uploader', uploader);        
         
 	}
 ]);

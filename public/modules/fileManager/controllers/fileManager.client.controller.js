@@ -141,6 +141,11 @@ angular.module('filemanager').controller('FilemanagerController', ['$scope', '$s
             });
         };
         
+        $scope.marketChange = function(){
+            $scope.search();
+        };
+
+        
         //socket.io
         Socket.on('file.import.end', function(file) {
             $scope.filesLoading--;

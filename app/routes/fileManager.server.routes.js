@@ -9,10 +9,6 @@ var users = require('../../app/controllers/users.server.controller'),
 module.exports = function(app) {
 	// Filemanager Routes
 
-	app.route('/filemanager/:dir')
-		.get(users.requiresLogin, fileManager.listFTP)
-		.post(users.requiresLogin, fileManager.importFile);
-
 	app.route('/loadedfiles')
 		.get(users.requiresLogin, fileManager.listLoadedFiles);
     

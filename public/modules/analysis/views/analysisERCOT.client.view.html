@@ -1,12 +1,12 @@
-<h3 data-ng-controller="TitleController">SPP Data Analysis for {{marketName}} </h3>
-<section data-ng-controller="AnalysisController" data-ng-init="initPage()">
+<h3 data-ng-controller="TitleERCOTController">ERCOT Data Analysis for {{marketName}} </h3>
+<section data-ng-controller="AnalysisERCOTController" data-ng-init="initPage()">
     <div class="row">
-        <div class="col-lg-12">
+        <div class="col-lg-2">
             <div ng-class="['panel', panelColor]">
                 <!-- Default panel contents -->
-                <div class="panel-heading">Data Review: Period and Location</div>
+                <div class="panel-heading">Period and Location</div>
                 <div class="panel-body">
-                    <form class="form-inline">
+                    <form class="form">
                       <div class="form-group">
                         <div class="input-group">
                             <input type="text" placeholder="Start date" class="form-control" datepicker-popup="dd-MMMM-yyyy" ng-model="dateFromInput" is-open="openedFrom" ng-required="false" close-text="Close" />
@@ -23,22 +23,16 @@
                             </span>
                         </div>
                       </div>
-                     <div class="form-group" style="width: 550px">
-                        <ui-select multiple="" ng-model="comboboxes.selectedLocations" theme="bootstrap" ng-disabled="disabled" style="width: 550px">
-                           <ui-select-match placeholder="Select locations...">{{$item.label}}</ui-select-match>
-                           <ui-select-choices repeat="location in locations | filter:$select.search">
-                               <div ng-bind-html="location.value | highlight: $select.search"></div>
-                           </ui-select-choices>
-                        </ui-select>
+                     <div class="form-group">
+                        <select class="form-control" size="15" id="locationSelect" multiple ng-multiple="true" ng-model="selectedLocations" ng-options="location.label for location in locations"></select>
                      </div>
                      <button class="btn btn-success" ng-click="search()"><em class="icon-magnifier"></em> Search</button>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row">
+        
         <!--need to use ng-if and duplicate, dynamic class causes grid not to render properly-->
-        <div ng-if="isDayAhead" class="col-lg-6">
+        <div ng-if="isDayAhead" class="col-lg-4">
             <div class="panel panel-primary">
                 <div class="panel-heading"> 
                   Data 
@@ -63,7 +57,7 @@
                 </div>
             </div>            
         </div>
-        <div ng-if="!isDayAhead" class="col-lg-6">
+        <div ng-if="!isDayAhead" class="col-lg-4">
             <div class="panel panel-warning">
                 <div class="panel-heading"> 
                   Data 
@@ -100,27 +94,8 @@
                         <ul class="list-inline" ng-show="showAveragesOnGraph">
                             <li><b>Averages</b></li>
                             <li>LMP <span class="label label-info">{{averageLMP}}</span></li>
-                            <li>MLC <span class="label label-info">{{averageMLC}}</span></li>
-                            <li>MCC <span class="label label-info">{{averageMCC}}</span></li>
-                            <li>MEC <span class="label label-info">{{averageMEC}}</span></li>
                         </ul>
                     </span>
-                    <span class="pull-right">
-                        <div class="btn-group" dropdown>
-                          <button type="button" class="btn btn-info dropdown-toggle" dropdown-toggle>
-                            {{graphSelectedSeries}} <span class="caret"></span>
-                          </button>
-                          <ul class="dropdown-menu" role="menu">
-                            <li><a ng-click="filterSeries('ALL')">ALL</a></li>
-                            <li class="divider"></li>
-                            <li><a ng-click="filterSeries('LMP')">LMP</a></li>
-                            <li><a ng-click="filterSeries('MLC')">MLC</a></li>
-                            <li><a ng-click="filterSeries('MCC')">MCC</a></li>
-                            <li><a ng-click="filterSeries('MEC')">MEC</a></li>
-                          </ul>
-                        </div>
-                    </span>
-
                     <canvas id="line" class="chart chart-line" data="graphData" options="graphOptions" 
                       labels="labels" legend="true" series="series" height="300px" 
                       click="onClick">

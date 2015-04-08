@@ -2,39 +2,20 @@
 <section data-ng-controller="FilemanagerERCOTController" uploader="uploader" data-ng-init="initPage()">
     <toaster-container toaster-options="{'position-class': 'toast-top-right', 'close-button':true}"></toaster-container>
     <div class="row">
-        <div class="col-lg-12">
-            <div class="panel panel-primary">
-                <!-- Default panel contents -->
-                <div class="panel-heading">Market</div>
-                <div class="panel-body">
-                      <div class="form-group">
-                        <ui-select style="width: 175px" ng-model="comboboxes.selectedMarket" theme="bootstrap" ng-disabled="disabled">
-                           <ui-select-match placeholder="Market...">{{$select.selected.label}}</ui-select-match>
-                           <ui-select-choices repeat="market in availableMarkets | filter: $select.search">
-                              <span ng-bind-html="market.label | highlight: $select.search"></span>
-                              <small ng-bind-html="market.value | highlight: $select.search"></small>
-                           </ui-select-choices>
-                        </ui-select>
-                      </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
         <div class="col-lg-6">
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     Select and load files
                 </div>
                 <div class="panel-body">
-                    <input filestyle="" type="file" data-button-text="Multiple" data-class-button="btn btn-default" data-class-input="form-control inline" nv-file-select="" uploader="uploader" multiple="" class="form-control" />
+                    <input filestyle="" type="file" data-button-text="Multiple" class="btn btn-default form-control" data-class-button="btn btn-default" data-class-input="form-control inline" nv-file-select="" uploader="uploader" multiple="" />
                 </div>
             </div>
             <div class="panel">
                <div class="panel-body">
                   <p ng-if="uploader.queue.length" class="pull-right label label-info">Queue length: {{ uploader.queue.length }}</p>
-                  <h4 class="page-header mt0">Upload queue</h4>
-                  <p ng-if="!uploader.queue.length" class="lead text-center">No files in queue. Start adding some..</p>
+                  <h4 class="page-header mt0">Files to upload</h4>
+                  <p ng-if="!uploader.queue.length" class="lead text-center">Select files...</p>
                   <div ng-if="uploader.queue.length">
                      <table ng-if="uploader.queue.length" class="table">
                         <thead>
@@ -58,27 +39,46 @@
             <div class="panel">
                <div class="panel-body">
                   <div>
-                     <p>Queue progress:</p>
+                     <p>File uploading progress:</p>
                      <div style="" class="progress progress-xs">
                         <div role="progressbar" ng-style="{ 'width': uploader.progress + '%' }" class="progress-bar"></div>
                      </div>
                   </div>
                   <button type="button" ng-click="uploader.uploadAll()" ng-disabled="!uploader.getNotUploadedItems().length" class="btn btn-info btn-s">
                      <span class="icon-cloud-upload mr"></span>Upload all</button>
-                  <button type="button" ng-click="uploader.cancelAll()" ng-disabled="!uploader.isUploading" class="btn btn-warning btn-s">
-                     <span class="icon-close mr"></span>Cancel all</button>
                   <button type="button" ng-click="uploader.clearQueue()" ng-disabled="!uploader.queue.length" class="btn btn-danger btn-s">
                      <span class="icon-trash mr"></span>Remove all</button>
                </div>
             </div>
+            <div class="panel" ng-hide="!filesLoading.length">
+               <div class="panel-body">
+                  <div>
+                     <p>File insertion progress:</p>
+                      <div ng-repeat="file in filesLoading">
+                         <div>{{file.filePath}}</div>
+                         <div style="" class="progress progress-xs">
+                            <div role="progressbar" ng-style="{ 'width': file.percent + '%' }" class="progress-bar"></div>
+                         </div>
+                      </div>
+                   </div>
+                </div>
+            </div>
         </div>
         <div class="col-lg-6">
             <div class="panel panel-primary">
-                <div class="panel-heading">Loaded files <span class="pull-right" ng-hide="!filesLoading"> Loading files... <span class="whirl line"></span> </span></div>
+                <div class="panel-heading">Loaded files <span class="pull-right" ng-hide="!filesLoading.length"> Loading files... <span class="whirl line"></span> </span></div>
                 <div class="panel-body">
                     <form class="form-inline" name="searchLoadedForm" >
                       <div class="form-group">
-                        <div class="input-group">
+                        <ui-select style="width: 175px" ng-model="comboboxes.selectedMarket" theme="bootstrap" ng-disabled="disabled">
+                           <ui-select-match placeholder="Market...">{{$select.selected.label}}</ui-select-match>
+                           <ui-select-choices repeat="market in availableMarkets | filter: $select.search">
+                              <span ng-bind-html="market.label | highlight: $select.search"></span>
+                           </ui-select-choices>
+                        </ui-select>
+                      </div>
+                      <div class="form-group">
+                        <div class="input-group" style="width: 170px">
                             <input type="text" placeholder="Start date" class="form-control" datepicker-popup="dd-MMMM-yyyy" ng-model="dateFromLoadedInput" is-open="openedLoadedFrom" ng-required="true" close-text="Close" />
                             <span class="input-group-btn">
                                 <button type="button" class="btn btn-default" ng-click="openLoadedFrom($event)"><em class="icon-calendar"></em></button>
@@ -86,7 +86,7 @@
                         </div>
                       </div>
                       <div class="form-group">
-                        <div class="input-group">
+                        <div class="input-group" style="width: 170px">
                             <input type="text" placeholder="End date" class="form-control" datepicker-popup="dd-MMMM-yyyy" ng-model="dateToLoadedInput" is-open="openedLoadedTo" ng-required="true" close-text="Close" />
                             <span class="input-group-btn">
                                 <button type="button" class="btn btn-default" ng-click="openLoadedTo($event)"><em class="icon-calendar"></em></button>

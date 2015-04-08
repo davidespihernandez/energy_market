@@ -11,6 +11,7 @@ var mongoose = require('mongoose'),
  */
 
 var RealTimeDataSchema = mongoose.Schema({
+    filePath: {type: String, index: true},
     market: {type: String},
     marketType: {type: String},
     date: {type: Date, index: true},

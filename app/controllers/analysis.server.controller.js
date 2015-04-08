@@ -16,14 +16,14 @@ var mongoose = require('mongoose'),
 
 function distinctLocations(market, done){
     var model = DayAheadData;
-    if("RTBM"===market){
+    if("RTBM"===market || "ERCOT_RTBM"===market){
         console.log('Querying locations for real time');
         model = RealTimeData;
     }
-    model.distinct('Settlement_Location', function(err, locations){
+    model.distinct('Settlement_Location', {market: market}, function(err, locations){
         console.log("Retrieved locations: " + locations.length);
         var endLocations = [];
-        locations.forEach(function(location){
+        locations.sort().forEach(function(location){
             endLocations.push({value: location, label: location});
         });
         done(endLocations);
@@ -75,9 +75,10 @@ exports.search = function(req, res) {
     var market = req.query.market;
     console.log('Searching data for %j', parameters);
     var query = DayAheadData.find();
-    if("RTBM"===market){
+    if("RTBM"===market || "ERCOT_RTBM"===market){
         query = RealTimeData.find();
     }
+    query = query.where('market').equals(market);
     if(parameters.dateFrom && parameters.dateFrom != "undefined" && parameters.dateFrom != "null"){
         console.log('Date from ' + parameters.dateFrom);
         query = query.where('date').gte(parameters.dateFrom);
@@ -113,7 +114,7 @@ exports.dashboard = function(req, res) {
     console.log('Loading dashboard for user %j', req.user);
     var dashboardData = {
             files: 0,
-            markets: 2,
+            markets: 4,
             locations: 0,
             rows: 0
         };

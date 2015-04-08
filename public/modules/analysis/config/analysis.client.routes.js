@@ -8,6 +8,10 @@ angular.module('analysis').config(['$stateProvider',
 		state('app.analysis', {
 			url: '/analysis/:market',
 			templateUrl: 'modules/analysis/views/analysis.client.view.html'
+		}).
+        state('app.analysisERCOT', {
+			url: '/analysisERCOT/:market',
+			templateUrl: 'modules/analysis/views/analysisERCOT.client.view.html'
 		});
 	}
 ]);
