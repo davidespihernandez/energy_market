@@ -1,0 +1,33 @@
+<h3>
+   Kibana dashboard
+</h3>
+<section data-ng-controller="KibanaController" data-ng-init="initPage()">
+    <div class="row" ng-if="elasticStarted">
+       <div class="col-lg-12">
+           <button class="btn btn-success" ng-click="indexAll()"><em class="icon-energy"></em> Index all</button>
+       </div>
+    </div>
+    <div class="row" ng-if="indexing">
+       <div class="col-lg-4">
+           Indexing information...
+       </div>
+       <div class="col-lg-4">
+           {{DADocs}}
+       </div>
+       <div class="col-lg-4">
+           {{RTBMDocs}}
+       </div>
+    </div>
+    <div class="row" ng-if="!elasticStarted">
+       <div class="col-lg-12">
+           Elasticsearch is not running. Launch the elasticsearch service!
+       </div>
+    </div>
+    <br />
+    <div class="row" ng-if="elasticStarted">
+       <div class="col-lg-12">
+           <iframe src="http://localhost:5601/#/dashboard/Day-Ahead?embed&_a=(filters:!(),panels:!((col:1,id:SPP-Day-Ahead-LMP,row:1,size_x:2,size_y:5,type:visualization),(col:1,id:ERCOT-Day-Ahead-LMP,row:12,size_x:2,size_y:5,type:visualization),(col:3,id:SPP-Day-Ahead-Averages-Table,row:1,size_x:10,size_y:5,type:visualization),(col:1,id:SPP-Day-Ahead-hourly-LMP-Line-Chart,row:6,size_x:12,size_y:6,type:visualization),(col:1,id:ERCOT-Day-Ahead-hourly-LMP-Line-Chart,row:17,size_x:12,size_y:6,type:visualization),(col:3,id:ERCOT-Day-Ahead-Averages-Table,row:12,size_x:10,size_y:5,type:visualization)),query:(query_string:(analyze_wildcard:!t,query:'*')),title:'Day%20Ahead')&_g=(refreshInterval:(display:Off,section:0,value:0),time:(from:now-1y,mode:quick,to:now))" height="600" width="100%"></iframe>
+       </div>
+    </div>
+    
+</section>

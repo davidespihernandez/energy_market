@@ -6,7 +6,9 @@ angular.module('core').run(['Menus',
 
     // Add default menu entry
     Menus.addMenuItem('sidebar', 'Dashboard', 'dashboard', null, '/dashboard', true, null, null, 'icon-speedometer');  //false -> non public
-
+	Menus.addSubMenuItem('sidebar', 'dashboard', 'Normal dashboard', 'dashboard');
+	Menus.addSubMenuItem('sidebar', 'dashboard', 'Kibana dashboard', 'kibana');
+      
   }
 ]).config(['$ocLazyLoadProvider', 'APP_REQUIRES', function ($ocLazyLoadProvider, APP_REQUIRES) {
   // Lazy Load modules configuration

@@ -11,13 +11,13 @@ angular.module('analysis').controller('AnalysisERCOTController', ['$scope', '$fi
         $scope.panelColor = 'panel-primary';
         $scope.marketName = 'Day Ahead';
         $scope.isDayAhead = true;
+        $scope.loadingClass = "";
         if($stateParams.market === 'RTBM'){
             $scope.comboboxes.selectedMarket = $scope.availableMarkets[1];
             $scope.panelColor = 'panel-warning';
             $scope.marketName = 'Real Time';
             $scope.isDayAhead = false;
         }
-        $scope.panelClass = "panel-body";
 
         console.log("AnalysisERCOTController!");
         $scope.dateFromInput = "";
@@ -169,7 +169,7 @@ angular.module('analysis').controller('AnalysisERCOTController', ['$scope', '$fi
         
         $scope.search = function(){
             console.log("Searching ");
-            $scope.panelClass = "panel-body whirl standard";
+            $scope.loadingClass = "whirl standard";
             var dateFrom, dateTo;
             var date;
             if($scope.dateFromInput){
@@ -191,7 +191,7 @@ angular.module('analysis').controller('AnalysisERCOTController', ['$scope', '$fi
                                                   locations: $scope.selectedLocations, 
                                                   dateFrom: dateFrom, 
                                                   dateTo: dateTo}, function(){
-                $scope.panelClass = "panel-body";
+                $scope.loadingClass = "";
                 $scope.totalItems = $scope.dataList.length;
                 $scope.gridOptions.data = $scope.dataList;
                 //fill the graph data

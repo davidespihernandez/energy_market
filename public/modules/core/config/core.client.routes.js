@@ -36,6 +36,12 @@ function ($stateProvider, $locationProvider, $urlRouterProvider, helper) {
       // templateUrl: helper.basepath('app.html'),
       templateUrl: 'modules/core/views/dashboard.client.view.html'
     })
+    .state('app.kibana', {
+      url: '/kibana',
+      // abstract: true,
+      // templateUrl: helper.basepath('app.html'),
+      templateUrl: 'modules/core/views/kibana.client.view.html'
+    })
     // 
     // CUSTOM RESOLVES
     //   Add your own resolves properties
