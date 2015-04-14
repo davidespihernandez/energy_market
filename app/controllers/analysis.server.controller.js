@@ -8,6 +8,7 @@ var mongoose = require('mongoose'),
 	MarketFile = mongoose.model('MarketFile'),
     DayAheadData = mongoose.model('DayAheadData'),
     RealTimeData = mongoose.model('RealTimeData'),
+    Dashboards = mongoose.model('Dashboards'),
 	_ = require('lodash');
 
 /**
@@ -135,6 +136,64 @@ exports.dashboard = function(req, res) {
                 });
             });
         });
+    });
+};
+
+function dashboardsToArray(dashboards){
+    var dashboardList = [];
+    var dashTitle, dashURL;
+    for(var i=1; i<=5; i++){
+        dashTitle = dashboards['title' + i];
+        dashURL =  dashboards['url' + i];
+        if(dashTitle && dashTitle.trim() !== ""){
+            dashboardList.push({ title: dashTitle, url: dashURL });
+        }
+    }
+    return(dashboardList);
+}
+
+exports.getKibanaDashboards = function(req, res) {
+    console.log('Retrieving dashboards for user %j', req.user);
+    Dashboards.findOne(function(err, dashboards){
+        if(dashboards){
+                res.json({dashboardsList: dashboardsToArray(dashboards), dashboards: dashboards});
+        } else{
+            //insert the dashboards and return an empty array
+            var dash = new Dashboards({ title1: '', url1: '', title2: '', url2: '', title3: '', url3: '', title4: '', url4: '', title5: '', url5: ''});
+            dash.save(function (err) {
+                // saved!
+                res.json({dashboardsList: dashboardsToArray(dash), dashboards: dash});
+            });
+        }
+    });
+};
+
+exports.setKibanaDashboards = function(req, res) {
+    console.log('Saving dashboards');
+    console.log(req.body);
+    console.log(req.query);
+    var dashTitle, dashURL;
+    Dashboards.findOne(function(err, dashboards){
+        if(dashboards){
+            console.log('Updating');
+            dashboards.title1 = req.body.title1;
+            dashboards.title2 = req.body.title2;
+            dashboards.title3 = req.body.title3;
+            dashboards.title4 = req.body.title4;
+            dashboards.title5 = req.body.title5;
+            dashboards.url1 = req.body.url1;
+            dashboards.url2 = req.body.url2;
+            dashboards.url3 = req.body.url3;
+            dashboards.url4 = req.body.url4;
+            dashboards.url5 = req.body.url5;
+            dashboards.save();
+        } else{
+            dashboards = new Dashboards(req.body);
+            console.log('Inserting');
+            dashboards.save(function (err) {
+                res.json('saved');
+            });
+        }
     });
 };
 

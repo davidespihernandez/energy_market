@@ -13,6 +13,10 @@ module.exports = function(app) {
     app.route('/dashboard')
 		.get(users.requiresLogin, analysis.dashboard);
     
+    app.route('/kibanadash')
+		.get(users.requiresLogin, analysis.getKibanaDashboards)
+        .post(users.requiresLogin, analysis.setKibanaDashboards);    
+    
     app.route('/elastic')
 		.get(users.requiresLogin, elastic.check)
         .post(users.requiresLogin, elastic.indexAll);    

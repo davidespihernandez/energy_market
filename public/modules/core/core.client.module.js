@@ -12,6 +12,14 @@
 // Use Applicaion configuration module to register a new module
 ApplicationConfiguration.registerModule('core');
 
+angular.module('core', []).config(function($sceDelegateProvider) {
+ $sceDelegateProvider.resourceUrlWhitelist([
+   // Allow same origin resource loads.
+   'self',
+   // Allow loading from our assets domain.  Notice the difference between * and **.
+   'http://localhost:5601/**']);
+ });
+
 angular.module('core').run(["$rootScope", "$state", "$stateParams",  '$window', '$templateCache',
   function ($rootScope, $state, $stateParams, $window, $templateCache) {
 

@@ -7,3 +7,8 @@ angular.module('core').factory('Elastic', ['$resource',
 	}
 ]);
 
+angular.module('core').factory('KibanaDashboards', ['$resource',
+	function($resource) {
+		return $resource('/kibanadash', { });
+	}
+]);

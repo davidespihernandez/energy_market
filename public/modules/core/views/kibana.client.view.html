@@ -2,32 +2,135 @@
    Kibana dashboard
 </h3>
 <section data-ng-controller="KibanaController" data-ng-init="initPage()">
-    <div class="row" ng-if="elasticStarted">
-       <div class="col-lg-12">
-           <button class="btn btn-success" ng-click="indexAll()"><em class="icon-energy"></em> Index all</button>
-       </div>
-    </div>
-    <div class="row" ng-if="indexing">
-       <div class="col-lg-4">
-           Indexing information...
-       </div>
-       <div class="col-lg-4">
-           {{DADocs}}
-       </div>
-       <div class="col-lg-4">
-           {{RTBMDocs}}
-       </div>
-    </div>
     <div class="row" ng-if="!elasticStarted">
        <div class="col-lg-12">
            Elasticsearch is not running. Launch the elasticsearch service!
        </div>
     </div>
-    <br />
     <div class="row" ng-if="elasticStarted">
-       <div class="col-lg-12">
-           <iframe src="http://localhost:5601/#/dashboard/Day-Ahead?embed&_a=(filters:!(),panels:!((col:1,id:SPP-Day-Ahead-LMP,row:1,size_x:2,size_y:5,type:visualization),(col:1,id:ERCOT-Day-Ahead-LMP,row:12,size_x:2,size_y:5,type:visualization),(col:3,id:SPP-Day-Ahead-Averages-Table,row:1,size_x:10,size_y:5,type:visualization),(col:1,id:SPP-Day-Ahead-hourly-LMP-Line-Chart,row:6,size_x:12,size_y:6,type:visualization),(col:1,id:ERCOT-Day-Ahead-hourly-LMP-Line-Chart,row:17,size_x:12,size_y:6,type:visualization),(col:3,id:ERCOT-Day-Ahead-Averages-Table,row:12,size_x:10,size_y:5,type:visualization)),query:(query_string:(analyze_wildcard:!t,query:'*')),title:'Day%20Ahead')&_g=(refreshInterval:(display:Off,section:0,value:0),time:(from:now-1y,mode:quick,to:now))" height="600" width="100%"></iframe>
-       </div>
+        <div class="col-lg-12">
+            <tabset type="pills">
+<!--                <tab heading="{{dashboard.title}}" ng-repeat="dashboard in dashboardList">
+                    <br />
+                    <iframe ng-src="{{dashboard.url}}" height="600" width="100%"></iframe>
+                </tab>-->
+                <tab ng-show="dashboardList.length" heading="{{dashboardList[0].title}}">
+                    <br />
+                    <iframe ng-src="{{dashboardList[0].url}}" height="600" width="100%"></iframe>
+                </tab>
+                <tab ng-show="dashboardList.length>1" heading="{{dashboardList[1].title}}">
+                    <br />
+                    <iframe ng-src="{{dashboardList[1].url}}" height="600" width="100%"></iframe>
+                </tab>
+                <tab ng-show="dashboardList.length>2" heading="{{dashboardList[2].title}}">
+                    <br />
+                    <iframe ng-src="{{dashboardList[2].url}}" height="600" width="100%"></iframe>
+                </tab>
+                <tab ng-show="dashboardList.length>3" heading="{{dashboardList[3].title}}">
+                    <br />
+                    <iframe ng-src="{{dashboardList[3].url}}" height="600" width="100%"></iframe>
+                </tab>
+                <tab ng-show="dashboardList.length>4" heading="{{dashboardList[4].title}}">
+                    <br />
+                    <iframe ng-src="{{dashboardList[4].url}}" height="600" width="100%"></iframe>
+                </tab>
+                
+                <tab heading="Settings">
+                    <br />
+                    <div class="row" ng-if="elasticStarted">
+                       <div class="col-lg-12">
+                           <button class="btn btn-success" ng-click="indexAll()"><em class="icon-energy"></em> Index all</button>
+                       </div>
+                    </div>
+                    <div class="row" ng-if="indexing">
+                       <div class="col-lg-4">
+                           Indexing information...
+                       </div>
+                       <div class="col-lg-4">
+                           {{DADocs}}
+                       </div>
+                       <div class="col-lg-4">
+                           {{RTBMDocs}}
+                       </div>
+                    </div>
+                    <hr />
+                    <h3> Configured dashboards </h3>
+                    <form role="form" ng-submit="saveDashboards()">
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                  <label>Dashboard 1 title</label>
+                                  <input type="text" placeholder="Dashboard 1 title" ng-model="formDashboards.title1" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-lg-8">
+                                <div class="form-group">
+                                  <label>Dashboard 1 URL</label>
+                                  <input type="text" placeholder="Dashboard 1 URL" ng-model="formDashboards.url1" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                  <label>Dashboard 2 title</label>
+                                  <input type="text" placeholder="Dashboard 2 title" ng-model="formDashboards.title2" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-lg-8">
+                                <div class="form-group">
+                                  <label>Dashboard 2 URL</label>
+                                  <input type="text" placeholder="Dashboard 2 URL" ng-model="formDashboards.url2" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                  <label>Dashboard 3 title</label>
+                                  <input type="text" placeholder="Dashboard 3 title" ng-model="formDashboards.title3" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-lg-8">
+                                <div class="form-group">
+                                  <label>Dashboard 3 URL</label>
+                                  <input type="text" placeholder="Dashboard 3 URL" ng-model="formDashboards.url3" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                  <label>Dashboard 4 title</label>
+                                  <input type="text" placeholder="Dashboard 4 title" ng-model="formDashboards.title4" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-lg-8">
+                                <div class="form-group">
+                                  <label>Dashboard 4 URL</label>
+                                  <input type="text" placeholder="Dashboard 4 URL" ng-model="formDashboards.url4" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                  <label>Dashboard 5 title</label>
+                                  <input type="text" placeholder="Dashboard 5 title" ng-model="formDashboards.title5" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="col-lg-8">
+                                <div class="form-group">
+                                  <label>Dashboard 5 URL</label>
+                                  <input type="text" placeholder="Dashboard 1 URL" ng-model="formDashboards.url5" class="form-control" />
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-sm btn-default"><em class="icon-save"></em> Save</button>
+                    </form>
+                </tab>
+            </tabset>
+        </div>
     </div>
     
 </section>

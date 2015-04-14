@@ -417,7 +417,7 @@ exports.uploadERCOT = function(req, res) {
     if("00012300" === fileNameComponents[1]){
         market = 'ERCOT_RTBM';
         MeasureType = RealTimeData;
-    } else if("00012328" === fileNameComponents[1]){
+    } else if("00012331" === fileNameComponents[1]){
         market = 'ERCOT_DA';
         MeasureType = DayAheadData;
     }
