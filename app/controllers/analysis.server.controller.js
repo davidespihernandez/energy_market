@@ -170,8 +170,6 @@ exports.getKibanaDashboards = function(req, res) {
 
 exports.setKibanaDashboards = function(req, res) {
     console.log('Saving dashboards');
-    console.log(req.body);
-    console.log(req.query);
     var dashTitle, dashURL;
     Dashboards.findOne(function(err, dashboards){
         if(dashboards){
@@ -187,11 +185,12 @@ exports.setKibanaDashboards = function(req, res) {
             dashboards.url4 = req.body.url4;
             dashboards.url5 = req.body.url5;
             dashboards.save();
+            res.json({dashboardsList: dashboardsToArray(dashboards), dashboards: dashboards});
         } else{
             dashboards = new Dashboards(req.body);
             console.log('Inserting');
             dashboards.save(function (err) {
-                res.json('saved');
+                res.json({dashboardsList: dashboardsToArray(dashboards), dashboards: dashboards});
             });
         }
     });

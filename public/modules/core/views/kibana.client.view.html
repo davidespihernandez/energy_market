@@ -9,34 +9,26 @@
     </div>
     <div class="row" ng-if="elasticStarted">
         <div class="col-lg-12">
-            <tabset type="pills">
-<!--                <tab heading="{{dashboard.title}}" ng-repeat="dashboard in dashboardList">
-                    <br />
-                    <iframe ng-src="{{dashboard.url}}" height="600" width="100%"></iframe>
-                </tab>-->
-                <tab ng-show="dashboardList.length" heading="{{dashboardList[0].title}}">
-                    <br />
-                    <iframe ng-src="{{dashboardList[0].url}}" height="600" width="100%"></iframe>
-                </tab>
-                <tab ng-show="dashboardList.length>1" heading="{{dashboardList[1].title}}">
-                    <br />
-                    <iframe ng-src="{{dashboardList[1].url}}" height="600" width="100%"></iframe>
-                </tab>
-                <tab ng-show="dashboardList.length>2" heading="{{dashboardList[2].title}}">
-                    <br />
-                    <iframe ng-src="{{dashboardList[2].url}}" height="600" width="100%"></iframe>
-                </tab>
-                <tab ng-show="dashboardList.length>3" heading="{{dashboardList[3].title}}">
-                    <br />
-                    <iframe ng-src="{{dashboardList[3].url}}" height="600" width="100%"></iframe>
-                </tab>
-                <tab ng-show="dashboardList.length>4" heading="{{dashboardList[4].title}}">
-                    <br />
-                    <iframe ng-src="{{dashboardList[4].url}}" height="600" width="100%"></iframe>
-                </tab>
+            <span class="pull-right">
+                    <ui-select id="dashboardSelect" style="width: 250px" ng-model="comboboxes.selectedDashboard" theme="bootstrap" ng-change="dashboardChange()" ng-disabled="disabled">
+                       <ui-select-match placeholder="Select dashboard...">{{$select.selected.title}}</ui-select-match>
+                       <ui-select-choices repeat="dashboard in dashboardList | filter: $select.search">
+                          <span ng-bind-html="dashboard.title | highlight: $select.search"></span>
+                       </ui-select-choices>
+                    </ui-select>
+            </span>
                 
+        </div>
+    </div>
+    <div class="row" ng-if="elasticStarted">
+        <div class="col-lg-12">
+            <tabset type="pills">
+                <tab ng-show="dashboardTitle" heading="{{dashboardTitle}}">
+                    <hr />
+                    <iframe ng-src="{{dashboardURL}}" height="600" width="100%"></iframe>
+                </tab>
                 <tab heading="Settings">
-                    <br />
+                    <hr />
                     <div class="row" ng-if="elasticStarted">
                        <div class="col-lg-12">
                            <button class="btn btn-success" ng-click="indexAll()"><em class="icon-energy"></em> Index all</button>

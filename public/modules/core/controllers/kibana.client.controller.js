@@ -11,7 +11,9 @@ angular.module('core').controller('KibanaController', ['$scope', 'Authentication
         $scope.finishedRTBM = false;
         $scope.dashboardList = [];
         $scope.formDashboards = {};
-        
+        $scope.comboboxes = {};
+        $scope.dashboardTitle = "";
+        $scope.dashboardURL = "";
                                                        
         $scope.initPage = function(){
             console.log('InitPage on KibanaController');
@@ -24,11 +26,22 @@ angular.module('core').controller('KibanaController', ['$scope', 'Authentication
                         //$scope.dashboardList.push({title: dashboard.title, url: "http://localhost:5601/#/dashboard/Day-Ahead?_g=(refreshInterval:(display:Off,section:0,value:0),time:(from:now-30d,mode:quick,to:now))&_a=(filters:!(),panels:!((col:1,id:SPP-Day-Ahead-LMP,row:1,size_x:2,size_y:5,type:visualization),(col:1,id:ERCOT-Day-Ahead-LMP,row:12,size_x:2,size_y:5,type:visualization),(col:3,id:SPP-Day-Ahead-Averages-Table,row:1,size_x:10,size_y:5,type:visualization),(col:1,id:SPP-Day-Ahead-hourly-LMP-Line-Chart,row:6,size_x:12,size_y:6,type:visualization),(col:1,id:ERCOT-Day-Ahead-hourly-LMP-Line-Chart,row:17,size_x:12,size_y:6,type:visualization),(col:3,id:ERCOT-Day-Ahead-Averages-Table,row:12,size_x:10,size_y:5,type:visualization)),query:(query_string:(analyze_wildcard:!t,query:'*')),title:'Day%20Ahead')"});
                         $scope.dashboardList.push({title: dashboard.title, url: dashboard.url});
                     });
-                    $scope.dashboards = resp.dashboards;
+                    console.log($scope.dashboardList);
                     $scope.formDashboards = resp.dashboards;
+                    if($scope.dashboardList.length>0){
+                        $scope.comboboxes.selectedDashboard = $scope.dashboardList[0];
+                        $scope.dashboardTitle = $scope.comboboxes.selectedDashboard.title;
+                        $scope.dashboardURL = $scope.comboboxes.selectedDashboard.url;
+                    }
                 });
             });
 	   };
+        
+        
+        $scope.dashboardChange = function(){
+            $scope.dashboardTitle = $scope.comboboxes.selectedDashboard.title;
+            $scope.dashboardURL = $scope.comboboxes.selectedDashboard.url;
+        };
         
         $scope.indexAll = function(){
             console.log('IndexAll on KibanaController');
@@ -42,8 +55,12 @@ angular.module('core').controller('KibanaController', ['$scope', 'Authentication
             
         $scope.saveDashboards = function(){
             KibanaDashboards.save($scope.formDashboards, function(response){
-                console.log('Saved!');
-                $scope.dashboards = $scope.formDashboards;
+                $scope.dashboardList = [];
+                response.dashboardsList.forEach(function(dashboard){
+                    //$scope.dashboardList.push({title: dashboard.title, url: "http://localhost:5601/#/dashboard/Day-Ahead?_g=(refreshInterval:(display:Off,section:0,value:0),time:(from:now-30d,mode:quick,to:now))&_a=(filters:!(),panels:!((col:1,id:SPP-Day-Ahead-LMP,row:1,size_x:2,size_y:5,type:visualization),(col:1,id:ERCOT-Day-Ahead-LMP,row:12,size_x:2,size_y:5,type:visualization),(col:3,id:SPP-Day-Ahead-Averages-Table,row:1,size_x:10,size_y:5,type:visualization),(col:1,id:SPP-Day-Ahead-hourly-LMP-Line-Chart,row:6,size_x:12,size_y:6,type:visualization),(col:1,id:ERCOT-Day-Ahead-hourly-LMP-Line-Chart,row:17,size_x:12,size_y:6,type:visualization),(col:3,id:ERCOT-Day-Ahead-Averages-Table,row:12,size_x:10,size_y:5,type:visualization)),query:(query_string:(analyze_wildcard:!t,query:'*')),title:'Day%20Ahead')"});
+                    $scope.dashboardList.push({title: dashboard.title, url: dashboard.url});
+                });
+                $scope.formDashboards = response.dashboards;
             });
             
         };

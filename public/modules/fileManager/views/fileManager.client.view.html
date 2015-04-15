@@ -12,7 +12,6 @@
                            <ui-select-match placeholder="Market...">{{$select.selected.label}}</ui-select-match>
                            <ui-select-choices repeat="market in availableMarkets | filter: $select.search">
                               <span ng-bind-html="market.label | highlight: $select.search"></span>
-                              <small ng-bind-html="market.value | highlight: $select.search"></small>
                            </ui-select-choices>
                         </ui-select>
                       </div>
